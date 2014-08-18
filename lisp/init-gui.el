@@ -3,6 +3,12 @@
 (column-number-mode)
 (setq inhibit-splash-screen t)
 
+;; set title
+(setq frame-title-format
+      '((:eval (if (buffer-file-name)
+                   (abbreviate-file-name (buffer-file-name))
+                 "%b"))))
+
 ;; fill-column-indicator
 (require-package 'fill-column-indicator)
 (require 'fill-column-indicator)
