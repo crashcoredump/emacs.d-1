@@ -36,6 +36,7 @@
 (require 'init-yaml)
 (require 'init-web-mode)
 (require 'init-markdown)
+(require 'init-ledger)
 
 ;; ===================
 ;; Tools and Utilities
