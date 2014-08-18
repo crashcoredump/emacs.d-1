@@ -16,7 +16,7 @@
   "Easy way to open my ledger journal"
   (interactive)
   (find-file *ledger-journal-path*))
-  
+
 (defun ledger-clear-report ()
   "Clear ledger report comment from current buffer")
 
