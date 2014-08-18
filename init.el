@@ -48,6 +48,7 @@
 (require 'init-uniquify)
 
 (require 'init-git)
+;; (require 'init-neotree)
 (require 'init-flycheck)
 (require 'init-company)
 (require 'init-projectile)
