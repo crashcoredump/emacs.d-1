@@ -10,6 +10,11 @@
 (setq ido-auto-merge-work-directories-length 0)
 (setq ido-use-virtual-buffers t)
 
+;; auto-complete ido everywhere
+(require-package 'ido-ubiquitous)
+(require 'ido-ubiquitous)
+(ido-ubiquitous-mode t)
+
 ;; Use smex to handle M-x
 (require-package 'smex)
 (global-set-key [remap execute-extended-command] 'smex)
