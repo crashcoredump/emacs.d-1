@@ -15,4 +15,6 @@
 ;; allow entering y/n for yes/no prompt
 (fset 'yes-or-no-p 'y-or-n-p)
 
+(show-paren-mode 1)
+
 (provide 'init-misc)
