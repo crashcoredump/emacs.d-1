@@ -37,6 +37,7 @@
 (require 'init-web-mode)
 (require 'init-markdown)
 (require 'init-ledger)
+(require 'init-javascript)
 
 ;; ===================
 ;; Tools and Utilities
