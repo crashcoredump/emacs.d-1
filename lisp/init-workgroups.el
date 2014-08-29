@@ -16,4 +16,11 @@
 (global-set-key (kbd "C-c C-9") 'wg-switch-to-workgroup-at-index-9)
 
 (workgroups-mode 1)
+
+;; save workgroup every 5 minutes
+(defun save-workgroup-session ()
+  (message "Saving workgroup session...")
+  (wg-save-session))
+(run-at-time "5 min" 300 'save-workgroup-session)
+
 (provide 'init-workgroups)
