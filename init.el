@@ -11,7 +11,7 @@
 ;; =============
 (require 'init-melpa)
 
-;; utility functions
+;; define utility functions
 (require 'init-utils)
 
 ;; bindings that don't belong anywhere else
@@ -20,13 +20,18 @@
 ;; needs to be before init-gui to properly set smart-mode-line colors
 (require 'init-mode-line)
 
+;; (g)ui stuff
 (require 'init-gui)
+
+;; improvements for ido
 (require 'init-ido)
 
 ;; window management
 (require 'init-windows)
 
+;; improvements for isearch
 (require 'init-isearch)
+
 (require 'init-misc)
 
 ;; =======================
@@ -51,11 +56,20 @@
 (require 'init-uniquify)
 
 (require 'init-git)
-;; (require 'init-neotree)
+
+;; on-the-fly linting
 (require 'init-flycheck)
+
+;; auto-complete library
 (require 'init-company)
+
+;; project navigation
 (require 'init-projectile)
+
+;; vim emulation
 (require 'init-evil)
+
+;; workgroups/sessions management
 (require 'init-workgroups)
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
