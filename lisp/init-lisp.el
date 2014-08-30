@@ -21,7 +21,7 @@
 (defun lisp-setup ()
   "Enable features useful in any Lisp mode."
   (rainbow-delimiters-mode t)
-  (hl-sexp-mode)
+  ;; (hl-sexp-mode)
   (enable-paredit-mode)
   (turn-on-eldoc-mode)
   (highlight-parentheses-mode))
