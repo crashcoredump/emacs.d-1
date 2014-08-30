@@ -15,6 +15,7 @@
 (setq fci-rule-color "orange")
 (setq fci-rule-column 80)
 (add-hook 'python-mode-hook 'fci-mode)
+(add-hook 'js2-mode-hook 'fci-mode)
 (add-hook 'clojure-mode-hook 'fci-mode)
 (add-hook 'erlang-mode-hook 'fci-mode)
 

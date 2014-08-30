@@ -38,6 +38,7 @@
 (require 'init-markdown)
 (require 'init-ledger)
 (require 'init-javascript)
+(require 'init-lisp)
 
 ;; ===================
 ;; Tools and Utilities
