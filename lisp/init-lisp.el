@@ -50,6 +50,6 @@
   (when (memq major-mode lispy-modes)
     (check-parens)))
 
-(add-hook 'after-save-hook #'maybe-check-parens)
+(add-hook 'after-save-hook 'maybe-check-parens)
 
 (provide 'init-lisp)

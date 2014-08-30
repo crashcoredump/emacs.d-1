@@ -22,6 +22,7 @@
   (when (memq 'workgroups-mode minor-mode-list)
     (message "Saving workgroup session...")
     (wg-save-session)))
-(run-at-time "5 min" 300 'save-workgroup-session)
+(after-load 'workgroups-mode
+  (run-at-time "5 min" 300 'save-workgroup-session))
 
 (provide 'init-workgroups)

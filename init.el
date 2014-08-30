@@ -39,6 +39,7 @@
 (require 'init-ledger)
 (require 'init-javascript)
 (require 'init-lisp)
+(require 'init-clojure)
 
 ;; ===================
 ;; Tools and Utilities
