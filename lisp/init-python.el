@@ -1,9 +1,11 @@
 ; this gets called by outline to deteremine the level. Just use the length of the whitespace
+
 (defun py-outline-level ()
   (let (buffer-invisibility-spec)
     (save-excursion
       (skip-chars-forward "\t ")
       (current-column))))
+
 ; this get called after python mode is enabled
 (defun my-python-hook ()
   ; outline uses this regexp to find headers. I match lines with no indent and indented "class"
@@ -15,11 +17,29 @@
   ;;(setq outline-minor-mode-prefix "\C-c")
   ; turn on outline mode
   (outline-minor-mode t)
-  ; initially hide all but the headers
-  ;;(hide-body)
-  ; I use CUA mode on the PC so I rebind these to make the more accessible
-  ;;(local-set-key [?\C-\t] 'py-shift-region-right)
-  ;;(local-set-key [?\C-\S-\t] 'py-shift-region-left)
-  ; make paren matches visible
 )
+(add-hook 'python-mode-hook 'my-python-hook)
+
+
+;; ========
+;; Anaconda
+;; ========
+(require-package 'anaconda-mode)
+(require-package 'company-anaconda)
+(add-hook 'python-mode-hook 'anaconda-mode)
+(add-hook 'python-mode-hook 'eldoc-mode)
+(add-to-list 'company-backends 'company-anaconda)
+;; remove company-ropemacs
+(delete 'company-ropemacs company-backends)
+
+;; ==========
+;; virtualenv
+;; ==========
+(require-package 'virtualenvwrapper)
+(require 'virtualenvwrapper)
+(venv-initialize-interactive-shells)
+(if (getenv "WORKON_HOME")
+  (setq venv-location (getenv "WORKON_HOME"))
+  (message "WORKON_HOME env variable not set."))
+
 (provide 'init-python)
