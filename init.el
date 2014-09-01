@@ -37,12 +37,6 @@
 ;; =======================
 ;; Language specific stuff
 ;; =======================
-
-;; auto-complete library
-;; this needs to be before the language specific stuff
-;; to properly load language specific auto-complete hooks
-(require 'init-company)
-
 (require 'init-python)
 (require 'init-yaml)
 (require 'init-web-mode)
@@ -58,6 +52,9 @@
 ;; dired improvements
 (require 'init-dired)
 
+;; ack
+(require 'init-ack)
+
 ;; nicer naming of buffers for files with identical names
 (require 'init-uniquify)
 
@@ -65,6 +62,9 @@
 
 ;; on-the-fly linting
 (require 'init-flycheck)
+
+;; auto-complete library
+(require 'init-company)
 
 ;; project navigation
 (require 'init-projectile)
