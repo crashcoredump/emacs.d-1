@@ -28,9 +28,12 @@
 (require-package 'company-anaconda)
 (add-hook 'python-mode-hook 'anaconda-mode)
 (add-hook 'python-mode-hook 'eldoc-mode)
-(add-to-list 'company-backends 'company-anaconda)
-;; remove company-ropemacs
-(delete 'company-ropemacs company-backends)
+
+;; wait for init to finish (to make sure company is initialized)
+(defun python-company-hook ()
+  (add-to-list 'company-backends 'company-anaconda)
+  (delete 'company-ropemacs company-backends))
+(add-hook 'after-init-hook 'python-company-hook)
 
 ;; ==========
 ;; virtualenv
