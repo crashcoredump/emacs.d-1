@@ -17,4 +17,17 @@
 
 (show-paren-mode 1)
 
+;; highlight symbol on hover
+(require-package 'highlight-symbol)
+(dolist (hook '(prog-mode-hook html-mode-hook))
+  (add-hook hook 'highlight-symbol-mode)
+  (add-hook hook 'highlight-symbol-nav-mode))
+(eval-after-load 'highlight-symbol
+  '(diminish 'highlight-symbol-mode))
+
+;; save place in buffer when revisiting a file
+(require 'saveplace)
+(setq-default save-place t)
+(setq save-place-file "~/.emacs.d/tmp/saved-places")
+
 (provide 'init-misc)

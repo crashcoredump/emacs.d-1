@@ -4,6 +4,7 @@
 (setq nrepl-hide-special-buffers t)
 (setq cider-repl-result-prefix ";; => ")
 (setq cider-repl-wrap-history t)
+(setq cider-repl-use-clojure-font-lock t)
 
 (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 (add-hook 'cider-repl-mode-hook 'subword-mode)

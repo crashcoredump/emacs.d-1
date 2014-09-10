@@ -11,6 +11,9 @@
 ;; =============
 (require 'init-melpa)
 
+;; common packages used across files
+(require 'init-common)
+
 ;; define utility functions
 (require 'init-utils)
 

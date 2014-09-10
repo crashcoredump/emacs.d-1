@@ -1,6 +1,4 @@
-(require-package 'diminish)
 (require-package 'smart-mode-line)
-(require 'diminish)
 (require 'smart-mode-line)
 
 (which-function-mode)
