@@ -24,6 +24,7 @@
 (require 'indent-guide)
 (add-hook 'python-mode-hook 'indent-guide-mode)
 (add-hook 'web-mode-hook 'indent-guide-mode)
+(setq indent-guide-recursive t)
 
 ;; font
 (set-face-attribute 'default nil
