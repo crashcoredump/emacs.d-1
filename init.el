@@ -48,6 +48,7 @@
 (require 'init-javascript)
 (require 'init-lisp)
 (require 'init-clojure)
+(require 'init-elixir)
 
 ;; ===================
 ;; Tools and Utilities
@@ -56,7 +57,7 @@
 (require 'init-dired)
 
 ;; ack
-(require 'init-ack)
+(require 'init-ack-ag)
 
 ;; nicer naming of buffers for files with identical names
 (require 'init-uniquify)

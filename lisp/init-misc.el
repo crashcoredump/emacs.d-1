@@ -30,4 +30,11 @@
 (setq-default save-place t)
 (setq save-place-file "~/.emacs.d/tmp/saved-places")
 
+;; smooth-scrolling
+(require-package 'smooth-scrolling)
+(require 'smooth-scrolling)
+(setq smooth-scroll-margin 5)
+(setq scroll-conservatively 9999
+      scroll-preserve-screen-position t)
+
 (provide 'init-misc)

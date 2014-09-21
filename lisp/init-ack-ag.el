@@ -11,4 +11,4 @@
 (require 'ag)
 (setq ag-highlight-search t)
 
-(provide 'init-ack)
+(provide 'init-ack-ag)
