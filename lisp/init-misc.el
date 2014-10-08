@@ -25,6 +25,8 @@
 (eval-after-load 'highlight-symbol
   '(diminish 'highlight-symbol-mode))
 
+(setq highlight-symbol-idle-delay 0)
+
 ;; save place in buffer when revisiting a file
 (require 'saveplace)
 (setq-default save-place t)
