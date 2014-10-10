@@ -31,7 +31,8 @@
     html-mode-hook
     ledger-mode-hook
     yaml-mode-hook
-    elixir-mode-hook))
+    elixir-mode-hook
+    markdown-mode-hook))
 (mapc (lambda (hook)
         (add-hook hook 'evil-local-mode))
       enable-evil-mode-hooks)
