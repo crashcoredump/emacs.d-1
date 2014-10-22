@@ -44,6 +44,12 @@
 
 (define-key evil-normal-state-map (kbd "SPC") 'evil-scroll-down)
 (define-key evil-normal-state-map (kbd "S-SPC") 'evil-scroll-up)
+
 (evil-leader/set-key "n" 'evil-search-highlight-persist-remove-all)
+
+(defun evil-reload-buffer ()
+  (interactive)
+  (evil-edit nil t))
+(evil-leader/set-key "e" 'evil-reload-buffer)
 
 (provide 'init-evil)
