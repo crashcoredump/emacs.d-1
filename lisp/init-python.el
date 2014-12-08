@@ -24,16 +24,10 @@
 ;; ========
 ;; Anaconda
 ;; ========
-(require-package 'anaconda-mode)
-(require-package 'company-anaconda)
-(add-hook 'python-mode-hook 'anaconda-mode)
-(add-hook 'python-mode-hook 'eldoc-mode)
-
-;; wait for init to finish (to make sure company is initialized)
-(defun python-company-hook ()
-  (add-to-list 'company-backends 'company-anaconda)
-  (delete 'company-ropemacs company-backends))
-(add-hook 'after-init-hook 'python-company-hook)
+(require-package 'jedi)
+(require 'jedi)
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)
 
 ;; ==========
 ;; virtualenv

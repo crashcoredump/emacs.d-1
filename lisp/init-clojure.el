@@ -16,6 +16,9 @@
   ;; unbind C-c C-m, it's for magit-status
   (define-key cider-mode-map (kbd "C-c C-m") nil))
 
+;; (require 'monroe)
+;; (add-hook 'clojure-mode-hook 'clojure-enable-monroe)
+
 ;; Use clojure-mode for clojurescript, since clojurescript-mode
 ;; pulls in Slime
 (add-auto-mode 'clojure-mode "\\.cljs\\'")

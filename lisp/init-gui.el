@@ -9,6 +9,8 @@
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
 
+(setq-default indicate-empty-lines t)
+
 ;; fill-column-indicator
 (require-package 'fill-column-indicator)
 (require 'fill-column-indicator)
@@ -24,7 +26,7 @@
 (require 'indent-guide)
 (add-hook 'python-mode-hook 'indent-guide-mode)
 (add-hook 'web-mode-hook 'indent-guide-mode)
-(setq indent-guide-recursive t)
+(setq indent-guide-recursive nil)
 
 ;; font
 (set-face-attribute 'default nil

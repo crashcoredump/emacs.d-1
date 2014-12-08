@@ -5,13 +5,14 @@
 (after-load 'dired
   (require 'dired+)
   (require 'dired-subtree)
+  (require 'dired-filter)
   (when (fboundp 'global-dired-hide-details-mode)
     (global-dired-hide-details-mode -1))
   (setq dired-recursive-deletes 'top)
-  (bind-dired-subtree-keys)
+  (bind-dired-utils-keys)
   (define-key dired-mode-map [mouse-2] 'dired-find-file))
 
-(defun bind-dired-subtree-keys ()
+(defun bind-dired-utils-keys ()
   (bind-keys :map dired-mode-map
            ("." . dired-up-directory)
            ("M-o" . dired-subtree-insert)
@@ -21,7 +22,9 @@
            ("M-p" . dired-subtree-previous-sibling)
            ("M-n" . dired-subtree-next-sibling)
            ("M->" . dired-subtree-end)
-           ("M-<" . dired-subtree-beginning)))
+           ("M-<" . dired-subtree-beginning)
+           ("C-c d" . dired-filter-by-directory)
+           ("C-c f" . dired-filter-by-file)))
 
 ;; Open dired in current directory
 (global-set-key (kbd "C-x C-d") '(lambda () (interactive) (dired ".")))

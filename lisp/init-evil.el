@@ -51,5 +51,6 @@
   (interactive)
   (evil-edit nil t))
 (evil-leader/set-key "e" 'evil-reload-buffer)
+(evil-leader/set-key "w" 'evil-write)
 
 (provide 'init-evil)

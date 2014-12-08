@@ -1,3 +1,6 @@
+(require-package 'reveal-in-finder)
+(require 'reveal-in-finder)
+
 (setq mac-command-modifier 'meta)
 (setq mac-option-modifier 'none)
 
