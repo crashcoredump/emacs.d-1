@@ -2,6 +2,7 @@
 custom.el
 auto-save-list/
 *.el~
+*.elc
 projectile-bookmarks.eld
 projectile.cache
 workgroups/

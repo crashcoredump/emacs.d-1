@@ -3,13 +3,14 @@
 
 (defconst *is-a-mac* (eq system-type 'darwin))
 
-(when *is-a-mac*
-  (require 'init-osx))
-
 ;; =============
 ;; General stuff
 ;; =============
 (require 'init-melpa)
+
+(when *is-a-mac*
+  (require 'init-osx))
+
 
 ;; common packages used across files
 (require 'init-common)

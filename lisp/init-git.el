@@ -10,6 +10,7 @@
  magit-save-some-buffers nil
  magit-process-popup-time 10
  magit-diff-refine-hunk t
+ magit-restore-window-configuration t
  magit-completing-read-function 'magit-ido-completing-read)
 
 ;; Hint: customize `magit-repo-dirs' so that you can use C-u M-F12 to
