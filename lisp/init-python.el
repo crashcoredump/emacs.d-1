@@ -39,4 +39,8 @@
   (setq venv-location (getenv "WORKON_HOME"))
   (message "WORKON_HOME env variable not set."))
 
+;; Nose
+(require-package 'nose)
+(require 'nose)
+
 (provide 'init-python)

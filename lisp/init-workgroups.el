@@ -23,6 +23,6 @@
     (message "Saving workgroup session...")
     (wg-save-session)))
 (after-load 'workgroups-mode
-  (run-at-time nil 300 'save-workgroup-session))
+  (run-at-time t 300 'save-workgroup-session))
 
 (provide 'init-workgroups)

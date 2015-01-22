@@ -6,6 +6,8 @@
 (require-package 'gitconfig-mode)
 (require-package 'git-messenger)
 
+(require 'magit)
+
 (setq-default
  magit-save-some-buffers nil
  magit-process-popup-time 10

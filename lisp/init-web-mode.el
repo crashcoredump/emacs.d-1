@@ -8,9 +8,9 @@
       '(("jinja2"    . "\\.jinja2\\'")
         ("jinja2"    . "\\.html\\'")))
 
-(setq web-mode-markup-indent-offset 2
-      web-mode-css-indent-offset 2
-      web-mode-code-indent-offset 2
+(setq web-mode-markup-indent-offset 4
+      web-mode-css-indent-offset 4
+      web-mode-code-indent-offset 4
       web-mode-enable-auto-quoting nil)
 
 (provide 'init-web-mode)
