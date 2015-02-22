@@ -29,9 +29,9 @@
 (setq indent-guide-recursive nil)
 
 ;; font
-(set-face-attribute 'default nil
-                    :family "Source Code Pro"
-                    :height 120)
+(set-frame-font (font-spec
+                 :family "Source Code Pro"
+                 :size 12))
 
 ;; theme
 (require-package 'flatui-theme)
