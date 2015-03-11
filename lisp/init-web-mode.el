@@ -11,6 +11,8 @@
 (setq web-mode-markup-indent-offset 4
       web-mode-css-indent-offset 4
       web-mode-code-indent-offset 4
-      web-mode-enable-auto-quoting nil)
+      web-mode-enable-auto-quoting nil
+      web-mode-enable-block-face t
+      web-mode-enable-current-element-highlight t)
 
 (provide 'init-web-mode)

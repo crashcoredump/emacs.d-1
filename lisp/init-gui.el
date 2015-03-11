@@ -30,8 +30,8 @@
 
 ;; font
 (set-frame-font (font-spec
-                 :family "Source Code Pro"
-                 :size 12))
+                 :family "Ubuntu Mono"
+                 :size 14))
 
 ;; theme
 (require-package 'flatui-theme)
