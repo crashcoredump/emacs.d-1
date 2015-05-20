@@ -15,6 +15,8 @@
  magit-restore-window-configuration t
  magit-completing-read-function 'magit-ido-completing-read)
 
+(setq magit-last-seen-setup-instructions "1.4.0")
+
 ;; Hint: customize `magit-repo-dirs' so that you can use C-u M-F12 to
 ;; quickly open magit on any one of your projects.
 (global-set-key (kbd "C-c C-m") 'magit-status)

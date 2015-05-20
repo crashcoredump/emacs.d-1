@@ -1,5 +1,6 @@
 (add-to-list 'load-path (expand-file-name "lisp" "~/.emacs.d/"))
 (add-to-list 'load-path (expand-file-name "lib" "~/.emacs.d/"))
+(add-to-list 'custom-theme-load-path (expand-file-name "themes" "~/.emacs.d/"))
 
 (defconst *is-a-mac* (eq system-type 'darwin))
 
@@ -78,7 +79,8 @@
 (require 'init-evil)
 
 ;; workgroups/sessions management
-(require 'init-workgroups)
+;; (require 'init-workgroups)
+(require 'init-perspective)
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)

@@ -8,4 +8,8 @@
 (setq projectile-enable-caching t)
 (global-set-key (kbd "C-x p") 'projectile-find-file)
 
+(require-package 'project-explorer)
+(require 'project-explorer)
+(global-set-key (kbd "<f3>") 'project-explorer-toggle)
+
 (provide 'init-projectile)

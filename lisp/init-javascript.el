@@ -17,6 +17,9 @@
 (after-load 'js2-mode
   (js2-imenu-extras-setup))
 
+(after-load 'js2-mode
+  (toggle-truncate-lines))
+
 (setq auto-mode-alist
       (cons '("\\.js\\'" . js2-mode) auto-mode-alist))
 
