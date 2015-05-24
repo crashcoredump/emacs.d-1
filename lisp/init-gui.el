@@ -28,13 +28,22 @@
 (add-hook 'web-mode-hook 'indent-guide-mode)
 (setq indent-guide-recursive nil)
 
+;; yascroll
+(require-package 'yascroll)
+(require 'yascroll)
+(global-yascroll-bar-mode 1)
+(setq yascroll:delay-to-hide nil)
+
 ;; font
 (set-frame-font (font-spec
                  :family "Ubuntu Mono"
                  :size 14))
 
 ;; theme
-(require-package 'flatui-theme)
-(require 'flatui-theme)
+;;(require-package 'flatui-theme)
+;;(require 'flatui-theme)
+;; (load-theme 'plan9)
+(require-package 'leuven-theme)
+(load-theme 'leuven t)
 
 (provide 'init-gui)
