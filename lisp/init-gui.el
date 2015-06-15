@@ -53,13 +53,11 @@
                  :size 14))
 
 ;; theme
-;;(require-package 'flatui-theme)
-(require 'flatui-theme)
+(require-package 'plan9-theme)
+(require 'plan9-theme)
 (load-theme 'plan9 t)
 ;; (require-package 'leuven-theme)
 ;; (load-theme 'leuven t)
 
 
-;;(require-package 'lenlen-theme)
-;;(load-theme 'lenlen-theme t)
 (provide 'init-gui)
