@@ -1,8 +1,8 @@
 (require-package 'elixir-mode)
-(require-package 'elixir-mix)
+;;(require-package 'elixir-mix)
 (require 'elixir-mode)
-(require 'elixir-mix)
+;;(require 'elixir-mix)
 
-(global-elixir-mix-mode)
+;;(global-elixir-mix-mode)
 
 (provide 'init-elixir)
