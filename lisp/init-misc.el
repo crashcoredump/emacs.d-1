@@ -57,6 +57,10 @@ create the new one."
 (setq scroll-conservatively 9999
       scroll-preserve-screen-position t)
 
+(setq scroll-margin 1
+      scroll-conservatively 0
+      scroll-up-aggressively 0.01
+      scroll-down-aggressively 0.01)
 
 ;; automatically create missing parent directories when visiting a new file
 (defun my-create-non-existent-directory ()

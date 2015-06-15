@@ -34,6 +34,19 @@
 (global-yascroll-bar-mode 1)
 (setq yascroll:delay-to-hide nil)
 
+;; scroll-restore
+(require-package 'scroll-restore)
+(require 'scroll-restore)
+(scroll-restore-mode 1)
+;; Allow scroll-restore to modify the cursor face
+(setq scroll-restore-handle-cursor t)
+;; Make the cursor invisible while POINT is off-screen
+(setq scroll-restore-cursor-type nil)
+;; Jump back to the original cursor position after scrolling
+(setq scroll-restore-jump-back t)
+;; Toggle scroll-restore-mode with the Scroll Lock key
+(global-set-key (kbd "<Scroll_Lock>") 'scroll-restore-mode)
+
 ;; font
 (set-frame-font (font-spec
                  :family "Ubuntu Mono"
@@ -41,9 +54,12 @@
 
 ;; theme
 ;;(require-package 'flatui-theme)
-;;(require 'flatui-theme)
-;; (load-theme 'plan9)
-(require-package 'leuven-theme)
-(load-theme 'leuven t)
+(require 'flatui-theme)
+(load-theme 'plan9 t)
+;; (require-package 'leuven-theme)
+;; (load-theme 'leuven t)
 
+
+;;(require-package 'lenlen-theme)
+;;(load-theme 'lenlen-theme t)
 (provide 'init-gui)

@@ -22,6 +22,7 @@
 (defvar enable-evil-mode-hooks
   '(clojure-mode-hook
     python-mode-hook
+    ruby-mode-hook
     erlang-mode-hook
     emacs-lisp-mode-hook
     web-mode-hook
