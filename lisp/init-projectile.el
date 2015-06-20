@@ -4,6 +4,7 @@
 (require 'flx)
 
 (projectile-global-mode)
+(setq projectile-switch-project-action 'projectile-dired)
 (setq projectile-completion-system 'ido)
 (setq projectile-enable-caching t)
 (global-set-key (kbd "C-x p") 'projectile-find-file)

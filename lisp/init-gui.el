@@ -59,5 +59,4 @@
 ;; (require-package 'leuven-theme)
 ;; (load-theme 'leuven t)
 
-
 (provide 'init-gui)

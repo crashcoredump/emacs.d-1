@@ -58,6 +58,9 @@
 ;; dired improvements
 (require 'init-dired)
 
+;; Org
+(require 'init-org)
+
 ;; ack
 (require 'init-ack-ag)
 
