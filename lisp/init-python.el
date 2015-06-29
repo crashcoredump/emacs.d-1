@@ -18,16 +18,15 @@
   ; turn on outline mode
   (outline-minor-mode t)
 )
-(add-hook 'python-mode-hook 'my-python-hook)
 
 
 ;; ========
 ;; Anaconda
 ;; ========
-(require-package 'jedi)
-(require 'jedi)
-(add-hook 'python-mode-hook 'jedi:setup)
-(setq jedi:complete-on-dot t)
+(require-package 'anaconda-mode)
+(require-package 'company-anaconda)
+(require 'company-anaconda)
+(require 'anaconda-mode)
 
 ;; ==========
 ;; virtualenv
@@ -42,5 +41,9 @@
 ;; Nose
 (require-package 'nose)
 (require 'nose)
+
+(add-to-list 'company-backends 'company-anaconda)
+(add-hook 'python-mode-hook 'anaconda-mode)
+(add-hook 'python-mode-hook 'my-python-hook)
 
 (provide 'init-python)

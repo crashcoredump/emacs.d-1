@@ -6,7 +6,7 @@
 (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
 (setq web-mode-engines-alist
       '(("jinja2"    . "\\.jinja2\\'")
-        ("jinja2"    . "\\.html\\'")))
+        ("django"    . "\\.html\\'")))
 
 (setq web-mode-markup-indent-offset 4
       web-mode-css-indent-offset 4
