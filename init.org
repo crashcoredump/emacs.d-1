@@ -312,6 +312,13 @@ appending a number.
       uniquify-ignore-buffers-re "^\\*")
 #+END_SRC
 
+Bind undo/redo to sane bindings.
+#+BEGIN_SRC emacs-lisp
+(require 'undo-tree)
+(global-set-key (kbd "M-z") 'undo)
+(global-set-key (kbd "M-Z") 'undo-tree-redo)
+#+END_SRC
+
 *** Shell
 #+BEGIN_SRC emacs-lisp
 ;; make these environment variables available in Emacs
@@ -404,6 +411,43 @@ Theme of the month.
 
 #+BEGIN_SRC emacs-lisp
 (load-theme 'plan9 t)
+#+END_SRC
+
+**** Mode line
+#+BEGIN_SRC emacs-lisp
+(which-function-mode)
+
+(sml/setup)
+
+(setq sml/name-width 20
+      sml/mode-width 10)
+
+(add-to-list 'sml/hidden-modes " GG")
+(add-to-list 'sml/hidden-modes " wg")
+(add-to-list 'sml/hidden-modes " ElDoc")
+(add-to-list 'sml/hidden-modes " AC")
+(add-to-list 'sml/hidden-modes " WSC")
+(add-to-list 'sml/hidden-modes " Outl")
+(add-to-list 'sml/hidden-modes " hs")
+(add-to-list 'sml/hidden-modes " Midje")
+(add-to-list 'sml/hidden-modes " cider")
+(add-to-list 'sml/hidden-modes " Par")
+
+(add-to-list 'sml/replacer-regexp-list '("^~/Projects/" ":PRJ:"))
+
+(add-hook 'emacs-lisp-mode-hook
+  (lambda()
+    (setq mode-name "el")))
+(add-hook 'python-mode-hook
+  (lambda()
+    (setq mode-name "py")))
+(add-hook 'clojure-mode-hook
+  (lambda()
+    (setq mode-name "clj")))
+(add-hook 'erlang-mode-hook
+  (lambda()
+    (setq mode-name "erl")))
+
 #+END_SRC
 
 *** ido, ~M-x~
@@ -504,7 +548,6 @@ Custom outline folding.
 #+END_SRC
 
 ***** Anaconda
-
 ****** TODO fix ~anaconda~ setup
 
 Use Anaconda with ~company~ for code completion.
@@ -550,7 +593,7 @@ filetypes.
       web-mode-enable-current-element-highlight t)
 #+END_SRC
 
-Then use the appropriate ~web-mode~ engine when visiting a particular filetype.
+Use the appropriate ~web-mode~ engine when visiting a particular filetype.
 At the moment we default to the ~django~ engine for ~.html~ files.
 If you are in a project that uses ~jinja2~ for templates, and the file extensions
 are in ~.html~ (a safe bet), then you'll need to define a ~.dir-locals.el~ file
