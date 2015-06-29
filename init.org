@@ -1,0 +1,853 @@
+#+TITLE:   John's Emacs Config
+#+AUTHOR:  John Del Rosario
+#+EMAIL:   john2x@gmail.com
+#+LANGUAGE: en
+#+PROPERTY: header-args :tangle yes
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+OPTIONS: H:4 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
+#+OPTIONS: skip:nil d:(HIDE) tags:not-in-toc
+#+TODO: SOMEDAY(s) TODO(t) INPROGRESS(i) WAITING(w@/!) NEEDSREVIEW(n@/!) | DONE(d)
+#+TODO: WAITING(w@/!) HOLD(h@/!) | CANCELLED(c@/!)
+#+TAGS: export(e) noexport(n)
+#+STARTUP: fold nodlcheck lognotestate content
+
+* init.org
+
+See ~init.el~ on how Org loads and interprets this file for initializing Emacs.
+
+The latest raw version of this file can be found at ...
+
+This file was last exported: {{{time(%Y-%m-%d %H:%M)}}}
+
+** System paths and files
+Tell Emacs where to put packages installed from Melpa, where custom themes
+can be loaded and where customizations done with ~customize~ should be stored.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path (expand-file-name "lib" "~/.emacs.d/"))
+(add-to-list 'custom-theme-load-path (expand-file-name "themes" "~/.emacs.d/"))
+
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (when (file-exists-p custom-file)
+  (load custom-file))
+#+END_SRC
+
+** Constants
+#+BEGIN_SRC emacs-lisp
+(defconst *is-a-mac* (eq system-type 'darwin))
+#+END_SRC
+
+** Package Archives and Management
+*** MELPA
+Add MELPA package archive
+#+BEGIN_SRC emacs-lisp
+(require 'package)
+(add-to-list 'package-archives
+  '("melpa" . "http://melpa.org/packages/") t)
+(package-initialize)
+#+END_SRC
+
+** Utility Functions and Macros
+
+Define utility functions and macros used throughout this config file.
+
+*** ~require-package~
+Define ~require-package~ for easier installing of
+packages.
+
+#+BEGIN_SRC emacs-lisp
+;; copied from github.com/purcell/emacs.d
+(defun require-package (package &optional min-version no-refresh)
+  "Install given PACKAGE, optionally requiring MIN-VERSION.
+If NO-REFRESH is non-nil, the available package lists will not be
+re-downloaded in order to locate PACKAGE."
+  (if (package-installed-p package min-version)
+      t
+    (if (or (assoc package package-archive-contents) no-refresh)
+        (package-install package)
+      (progn
+        (package-refresh-contents)
+        (require-package package min-version t)))))
+#+END_SRC
+
+*** ~after-load~
+#+BEGIN_SRC emacs-lisp
+(defmacro after-load (feature &rest body)
+  "After FEATURE is loaded, evaluate BODY."
+  (declare (indent defun))
+  `(eval-after-load ,feature
+     '(progn ,@body)))
+#+END_SRC
+
+*** ~add-auto-mode~
+#+BEGIN_SRC emacs-lisp
+(defun add-auto-mode (mode &rest patterns)
+  "Add entries to `auto-mode-alist' to use `MODE' for all given file `PATTERNS'."
+  (dolist (pattern patterns)
+    (add-to-list 'auto-mode-alist (cons pattern mode))))
+#+END_SRC
+
+** OS Specific
+
+*** OS X
+
+Conditionally set the following when on OS X (see *Constants*):
+   1. Reveal file in current buffer in Finder.
+   2. Use Command ⌘ for Meta and don't use Option ⌥.
+   3. Fix mouse wheel/trackpad scrolling to be less "jerky".
+
+#+BEGIN_SRC emacs-lisp
+(when *is-a-mac*
+  ;; 1.
+  (require-package 'reveal-in-finder)
+  (require 'reveal-in-finder)
+  ;; 2.
+  (setq mac-command-modifier 'meta)
+  (setq mac-option-modifier 'none)
+  ;; 3.
+  (setq mouse-wheel-scroll-amount '(1
+                                    ((shift) . 5)
+                                    ((control)))))
+#+END_SRC
+
+** Install Packages
+
+Install all packages here using ~require-package~.
+
+#+BEGIN_SRC emacs-lisp
+;;;; Misc
+(require-package 'exec-path-from-shell)
+
+(require-package 'undo-tree)
+
+(require-package 'bind-key)
+
+;;;; Mode-line
+
+(require-package 'diminish)
+
+(require-package 'smart-mode-line)
+
+;;;; UI
+
+(require-package 'indent-guide)
+
+(require-package 'yascroll)
+
+(require-package 'highlight-symbol)
+
+(require-package 'smooth-scrolling)
+
+;;;; ido, ~M-x~
+
+(require-package 'flx-ido)
+
+(require-package 'ido-ubiquitous)
+
+(require-package 'smex)
+
+(require-package 'idomenu)
+
+;;;; Window and frame management
+
+(require-package 'buffer-move)
+
+(require-package 'window-number)
+
+(require-package 'fullframe)
+
+;;;; Interactive Search
+
+(require-package 'anzu)
+
+;;;; Completion
+
+(require-package 'company)
+
+;;;; Linting
+
+(require-package 'flycheck)
+
+;;;; Dired
+(require-package 'dired+)
+
+;;;; Ack & Ag
+(require-package 'ag)
+
+;;;; Git
+(require-package 'magit)
+(require-package 'git-blame)
+(require-package 'git-commit-mode)
+(require-package 'git-rebase-mode)
+(require-package 'gitignore-mode)
+(require-package 'gitconfig-mode)
+(require-package 'git-messenger)
+(require-package 'git-gutter)
+
+;;;; Projectile
+(require-package 'projectile)
+(require-package 'flx)
+
+(require-package 'project-explorer)
+
+;;;; Perspective
+(require-package 'perspective)
+
+;;;; Evil (Vim)
+(require-package 'evil)
+(require-package 'evil-surround)
+(require-package 'evil-leader)
+(require-package 'evil-matchit)
+(require-package 'evil-nerd-commenter)
+(require-package 'evil-search-highlight-persist)
+
+;;;; Language specific
+;;;;;; Python
+(require-package 'virtualenvwrapper)
+
+(require-package 'anaconda-mode)
+(require-package 'company-anaconda)
+
+(require-package 'nose)
+
+;;;;;; YAML
+(require-package 'yaml-mode)
+
+;;;;;; HTML, CSS
+(require-package 'web-mode)
+
+;;;;;; Markdown
+(require-package 'markdown-mode)
+
+;;;;;; Javascript
+(require-package 'json-mode)
+(require-package 'js2-mode)
+
+;;;;;; Lisp
+(require-package 'paredit)
+(require-package 'rainbow-delimiters)
+(require-package 'highlight-parentheses)
+
+;;;; Ledger
+(require-package 'ledger-mode)
+(require-package 'flycheck-ledger)
+#+END_SRC
+
+** Configure
+
+Now that everything is installed and ready, we can begin
+configuring packages, modes, key bindings, etc.
+
+*** Misc
+
+For a majority of programming modes, we want to indent immediately after a
+newline.
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "RET") 'newline-and-indent)
+#+END_SRC
+
+For a majority of programming languages, an underscore is part of a word or symbol.
+
+#+BEGIN_SRC emacs-lisp
+(modify-syntax-entry  ?_ "w" (standard-syntax-table))
+#+END_SRC
+
+Set some generic variables.
+
+#+BEGIN_SRC emacs-lisp
+(setq-default
+ tab-width 4
+ make-backup-files nil
+ indent-tabs-mode nil
+ show-trailing-whitespace t
+ visible-bell nil)
+#+END_SRC
+
+We don't want to have to type "yes" or "no" at prompts.
+
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+Remember where we were when we last visited a file.
+
+#+BEGIN_SRC emacs-lisp
+(setq-default save-place t)
+(setq save-place-file "~/.emacs.d/tmp/saved-places")
+#+END_SRC
+
+Automatically creating missing parent directories when visiting a new file.
+
+#+BEGIN_SRC emacs-lisp
+(defun my-create-non-existent-directory ()
+      (let ((parent-directory (file-name-directory buffer-file-name)))
+        (when (and (not (file-exists-p parent-directory))
+                   (y-or-n-p (format "Directory `%s' does not exist! Create it?" parent-directory)))
+          (make-directory parent-directory t))))
+(add-to-list 'find-file-not-found-functions #'my-create-non-existent-directory)
+#+END_SRC
+
+Configure smooth scrolling.
+
+#+BEGIN_SRC emacs-lisp
+(setq smooth-scroll-margin 5
+      scroll-conservatively 9999
+      scroll-preserve-screen-position t
+      scroll-margin 1
+      scroll-conservatively 0
+      scroll-up-aggressively 0.01
+      scroll-down-aggressively 0.01)
+#+END_SRC
+
+When visiting buffers with the same name, uniqify them instead of the default of
+appending a number.
+
+#+BEGIN_SRC emacs-lisp
+(setq uniquify-buffer-name-style 'forward
+      uniquify-separator " • "
+      uniquify-after-kill-buffer-p t
+  ;; don't uniquify internal buffers (those that start with '*')
+      uniquify-ignore-buffers-re "^\\*")
+#+END_SRC
+
+*** Shell
+#+BEGIN_SRC emacs-lisp
+;; make these environment variables available in Emacs
+(after-load 'exec-path-from-shell
+  (dolist (var '("SSH_AUTH_SOCK"
+                 "SSH_AGENT_PID"
+                 "GPG_AGENT_INFO"
+                 "LANG"
+                 "LC_CTYPE"
+                 "WORKON_HOME"))
+    (add-to-list 'exec-path-from-shell-variables var)))
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
+#+END_SRC
+
+*** UI
+
+Configure UI stuff like:
+- hide toolbars
+- hide GUI scrollbars, use in-buffer scrollbars instead with ~yascroll~
+- show indentation guide (useful for Python and HTML)
+
+#+BEGIN_SRC emacs-lisp
+(require 'yascroll)
+(require 'indent-guide)
+
+;; don't show toolbar
+(tool-bar-mode -1)
+
+;; highlight matching parentheses
+(show-paren-mode 1)
+
+;; we use yascroll for the scrollbar instead
+(scroll-bar-mode -1)
+(global-yascroll-bar-mode 1)
+(setq yascroll:delay-to-hide nil)
+
+;; show column number in mode-line
+(column-number-mode)
+
+(setq inhibit-splash-screen t)
+
+(setq-default indicate-empty-lines t)
+
+;; enable indent-guide for the following modes only
+(setq indent-guide-recursive nil)
+(add-hook 'python-mode-hook 'indent-guide-mode)
+(add-hook 'web-mode-hook 'indent-guide-mode)
+#+END_SRC
+
+Enable ~highlight-symbol~ in select modes. Also patch how symbols are (not)
+highlighted when holding down movement keys.
+
+#+BEGIN_SRC emacs-lisp
+(dolist (hook '(prog-mode-hook html-mode-hook))
+  (add-hook hook 'highlight-symbol-mode)
+  (add-hook hook 'highlight-symbol-nav-mode))
+
+(eval-after-load 'highlight-symbol
+  '(diminish 'highlight-symbol-mode))
+
+;; http://emacs.stackexchange.com/questions/931
+(defun highlight-symbol-mode-post-command ()
+  "After a command, change the temporary highlighting.
+Remove the temporary symbol highlighting and, unless a timeout is specified,
+create the new one."
+  (if (eq this-command 'highlight-symbol-jump)
+      (when highlight-symbol-on-navigation-p
+        (highlight-symbol-temp-highlight))
+    (highlight-symbol-update-timer highlight-symbol-idle-delay)))
+
+(defun highlight-symbol-update-timer (value)
+  (when highlight-symbol-timer
+    (cancel-timer highlight-symbol-timer))
+  (setq highlight-symbol-timer
+        (run-with-timer value nil 'highlight-symbol-temp-highlight)))
+
+(setq highlight-symbol-idle-delay .1)
+#+END_SRC
+
+**** Font
+#+BEGIN_SRC emacs-lisp
+(set-frame-font (font-spec
+                 :family "Ubuntu Mono"
+                 :size 14))
+#+END_SRC
+**** Theme
+
+Theme of the month.
+
+#+BEGIN_SRC emacs-lisp
+(load-theme 'plan9 t)
+#+END_SRC
+
+*** ido, ~M-x~
+#+BEGIN_SRC emacs-lisp
+(ido-mode t)
+(ido-everywhere t)
+(flx-ido-mode t)
+;; auto-complete using ido everywhere
+(ido-ubiquitous-mode t)
+
+;; use smex to handle M-x
+(global-set-key [remap execute-extended-command] 'smex)
+
+(setq ido-enable-flex-matching t
+      ido-use-filename-at-point nil
+      ido-auto-merge-work-directories-length 0
+      ido-use-virtual-buffers t
+;; Allow the same buffer to be open in different frames
+      ido-default-buffer-method 'selected-window)
+#+END_SRC
+
+Ignore dired buffers when using ~ido-switch-buffer~, as we're only interested
+in actual file buffers (and some internal buffers).
+
+#+BEGIN_SRC emacs-lisp
+;; ignore dired buffers from ido-switch-buffer
+(defun ido-ignore-dired-buffers (name)
+  (if (get-buffer name)
+      (with-current-buffer name
+        (derived-mode-p 'dired-mode))))
+(add-to-list 'ido-ignore-buffers 'ido-ignore-dired-buffers)
+#+END_SRC
+
+*** Window and frame management
+
+Use ~M-g [h|j|k|l]~ to swap buffers between windows.
+Also allow using numbers to switch window focus.
+
+#+BEGIN_SRC emacs-lisp
+(require 'buffer-move)
+(require 'window-number)
+
+(dolist (fn '(buf-move-up buf-move-down buf-move-left buf-move-right))
+  (let ((file "buffer-move"))
+    (autoload fn file "Swap buffers between windows" t)))
+(global-set-key (kbd "M-g h")       'buf-move-left)
+(global-set-key (kbd "M-g l")       'buf-move-right)
+(global-set-key (kbd "M-g k")       'buf-move-up)
+(global-set-key (kbd "M-g j")       'buf-move-down)
+
+(window-number-meta-mode 1)
+#+END_SRC
+
+*** Interactive searching
+
+#+BEGIN_SRC emacs-lisp
+(global-anzu-mode t)
+
+(diminish 'anzu-mode)
+
+(global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
+(global-set-key [remap query-replace] 'anzu-query-replace)
+
+;; Activate occur easily inside isearch
+(define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
+#+END_SRC
+
+*** Completion
+**** company
+
+Enable ~company-mode~ globally.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'after-init-hook #'global-company-mode)
+#+END_SRC
+
+*** Language Specific
+**** Python
+
+Custom outline folding.
+
+#+BEGIN_SRC emacs-lisp
+(defun py-outline-level ()
+  (let (buffer-invisibility-spec)
+    (save-excursion
+      (skip-chars-forward "\t ")
+      (current-column))))
+
+(defun my-python-hook ()
+  ; outline uses this regexp to find headers. I match lines with no indent and indented "class"
+  ; and "def" lines.
+  (setq outline-regexp "[^ \t]\\|[ \t]*\\(def\\|class\\) ")
+  ; enable our level computation
+  (setq outline-level 'py-outline-level)
+  (outline-minor-mode t))
+
+(add-hook 'python-mode-hook 'my-python-hook)
+#+END_SRC
+
+***** Anaconda
+
+****** TODO fix ~anaconda~ setup
+
+Use Anaconda with ~company~ for code completion.
+(Not working at the time of writing)
+
+#+BEGIN_SRC emacs-lisp
+(require 'company-anaconda)
+(add-to-list 'company-backends 'company-anaconda)
+(add-hook 'python-mode-hook 'anaconda-mode)
+#+END_SRC
+
+***** Virtual Environments
+
+Tell ~virtualenvwrapper~ where ~$WORKON_HOME~ is.
+
+#+BEGIN_SRC emacs-lisp
+(venv-initialize-interactive-shells)
+(if (getenv "WORKON_HOME")
+  (setq venv-location (getenv "WORKON_HOME"))
+  (message "WORKON_HOME env variable not set."))
+#+END_SRC
+
+**** YAML
+#+BEGIN_SRC emacs-lisp
+(add-auto-mode 'yaml-mode "\\.ya?ml\\'")
+#+END_SRC
+
+**** HTML/CSS (~web-mode~)
+
+We use ~web-mode~ for working with templates and enable it for the following
+filetypes.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.jinja2?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
+
+(setq web-mode-markup-indent-offset 4
+      web-mode-css-indent-offset 4
+      web-mode-code-indent-offset 4
+      web-mode-enable-auto-quoting nil
+      web-mode-enable-block-face t
+      web-mode-enable-current-element-highlight t)
+#+END_SRC
+
+Then use the appropriate ~web-mode~ engine when visiting a particular filetype.
+At the moment we default to the ~django~ engine for ~.html~ files.
+If you are in a project that uses ~jinja2~ for templates, and the file extensions
+are in ~.html~ (a safe bet), then you'll need to define a ~.dir-locals.el~ file
+for that project, telling it to use the appropriate engine.
+#+BEGIN_SRC emacs-lisp
+(setq web-mode-engines-alist
+      '(("jinja2"    . "\\.jinja2\\'")
+        ("django"    . "\\.html\\'")))
+#+END_SRC
+
+**** Markdown
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.\\(md\\|markdown\\)\\'" . markdown-mode))
+#+END_SRC
+
+**** Javascript
+
+We use ~js2-mode~ instead of the built-in ~js-mode~.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+
+(setq js2-use-font-lock-faces t
+      js2-mode-must-byte-compile nil
+      js2-basic-offset 2
+      js2-indent-on-enter-key t
+      js2-auto-indent-p t
+      js2-bounce-indent-p nil)
+
+(after-load 'js2-mode
+  (js2-imenu-extras-setup)
+  (toggle-truncate-lines))
+#+END_SRC
+
+**** Lisp
+
+Use ~pp-eval-expression~. The same as ~eval-expression~, but pretty-prints output.
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-:") 'pp-eval-expression)
+#+END_SRC
+
+Define a list of "lispy" modes, so we can activate/deactivate stuff for all of
+them in a loop.
+#+BEGIN_SRC emacs-lisp
+(require 'derived)
+
+;; elisp only
+(defconst elispy-modes
+  '(emacs-lisp-mode ielm-mode))
+;; all lisps
+(defconst lispy-modes
+  (append elispy-modes
+          '(lisp-mode inferior-lisp-mode lisp-interaction-mode
+            clojure-mode))
+  "All lispy major modes.")
+
+(defun my-lisp-setup ()
+  "Enable features useful in any Lisp mode."
+  (rainbow-delimiters-mode t)
+  ;; (hl-sexp-mode)
+  (enable-paredit-mode)
+  (turn-on-eldoc-mode)
+  (highlight-parentheses-mode))
+
+(dolist (hook (mapcar #'derived-mode-hook-name lispy-modes))
+  (add-hook hook 'my-lisp-setup))
+#+END_SRC
+
+Check parentheses on save.
+#+BEGIN_SRC emacs-lisp
+(defun maybe-check-parens ()
+  "Run `check-parens' if this is a lispy mode."
+  (when (memq major-mode lispy-modes)
+    (check-parens)))
+
+(add-hook 'after-save-hook 'maybe-check-parens)
+#+END_SRC
+
+*** Dired
+
+Don't hide details in dired.
+#+BEGIN_SRC emacs-lisp
+(setq diredp-hide-details-initially-flag nil)
+#+END_SRC
+
+Define some keybindings for ~dired~ for quick navigation.
+#+BEGIN_SRC emacs-lisp
+(defun bind-dired-utils-keys ()
+  (bind-keys :map dired-mode-map
+           ("." . dired-up-directory)
+           ("M-o" . dired-subtree-insert)
+           ("M-c" . dired-subtree-remove)
+           ("M-u" . dired-subtree-up)
+           ("M-d" . dired-subtree-down)
+           ("M-p" . dired-subtree-previous-sibling)
+           ("M-n" . dired-subtree-next-sibling)
+           ("M->" . dired-subtree-end)
+           ("M-<" . dired-subtree-beginning)
+           ("C-c d" . dired-filter-by-directory)
+           ("C-c f" . dired-filter-by-file)))
+#+END_SRC
+
+Setup ~dired+~.
+#+BEGIN_SRC emacs-lisp
+(after-load 'dired
+  (require 'dired+)
+  (require 'dired-subtree)
+  (require 'dired-filter)
+  (when (fboundp 'global-dired-hide-details-mode)
+    (global-dired-hide-details-mode -1))
+  (setq dired-recursive-deletes 'top)
+  (bind-dired-utils-keys)
+  (define-key dired-mode-map [mouse-2] 'dired-find-file))
+#+END_SRC
+
+Open ~dired~ for the current directory when pressing ~C-x C-d~.
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x C-d") '(lambda () (interactive) (dired ".")))
+#+END_SRC
+
+Omit uninteresting files in ~dired~.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'dired-mode-hook (lambda () (dired-omit-mode)))
+#+END_SRC
+
+*** Org
+
+Tell Org where our orgfiles are.
+#+BEGIN_SRC emacs-lisp
+(setq org-directory "~/orgfiles")
+#+END_SRC
+
+Set custom TODO keywords.
+#+BEGIN_SRC emacs-lisp
+(setq org-todo-keywords
+      '((sequence "TODO" "DOING" "WAITING" "LATER" "|" "DONE" "DELEGATED")))
+#+END_SRC
+
+Default notes file for ~org-capture~.
+#+BEGIN_SRC emacs-lisp
+(setq org-default-notes-file (concat org-directory "/notes.org"))
+#+END_SRC
+
+Set custom ~org-capture~ templates.
+#+BEGIN_SRC emacs-lisp
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline (concat org-directory "/todo.org") "Other")
+         "* TODO %?\n  %i\n  %a")
+        ("n" "Note" entry (file+datetree (concat org-directory "/notes.org"))
+         "* %?\nEntered on %U\n  %i\n  %a")))
+
+(global-set-key (kbd "C-c o c") 'org-capture)
+#+END_SRC
+
+Add custom ~org-agenda~ command. We'd like to see at a glance:
+- Our agenda for the week
+- What we are currently working on
+- List of remaining TODO items
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-custom-commands
+      '(("z" "Agenda and Tasks"
+         ((agenda "")
+          (todo "DOING")
+          (todo "TODO")))))
+#+END_SRC
+
+Enable font-locking for org-blocks.
+#+BEGIN_SRC emacs-lisp
+(setq org-src-fontify-natively t)
+#+END_SRC
+
+*** Git
+
+Show git status indicators in the fringe.
+
+#+BEGIN_SRC emacs-lisp
+(global-git-gutter-mode 1)
+(setq git-gutter:modified-sign "* "
+      git-gutter:added-sign "+ "
+      git-gutter:deleted-sign "- "
+      git-gutter:lighter " GG")
+
+(global-set-key (kbd "M-g M-p") 'git-gutter:previous-hunk)
+(global-set-key (kbd "M-g M-n") 'git-gutter:next-hunk)
+#+END_SRC
+
+**** Magit
+
+#+BEGIN_SRC emacs-lisp
+;; skip warning introduced by 1.4.0
+(setq magit-last-seen-setup-instructions "1.4.0")
+
+(setq-default
+ magit-save-some-buffers nil
+ magit-process-popup-time 10
+ magit-diff-refine-hunk t
+ magit-restore-window-configuration t
+ magit-completing-read-function 'magit-ido-completing-read)
+
+(global-set-key (kbd "C-c C-m") 'magit-status)
+#+END_SRC
+
+Make the Magit buffer take the entire frame.
+#+BEGIN_SRC emacs-lisp
+(after-load 'magit
+  (fullframe magit-status magit-mode-quit-window))
+#+END_SRC
+
+*** Flycheck
+#+BEGIN_SRC emacs-lisp
+(setq flycheck-check-syntax-automatically '(save idle-change mode-enabled)
+      flycheck-idle-change-delay 0.8)
+(add-hook 'after-init-hook #'global-flycheck-mode)
+#+END_SRC
+
+*** Projectile
+#+BEGIN_SRC emacs-lisp
+(projectile-global-mode)
+
+(setq projectile-switch-project-action 'projectile-dired
+      projectile-completion-system 'ido
+      projectile-enable-caching t)
+
+(global-set-key (kbd "C-x p") 'projectile-find-file)
+#+END_SRC
+
+Not actually projectile, but still project management related.
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "<f3>") 'project-explorer-toggle)
+#+END_SRC
+
+*** Evil
+
+Bind ~<F12>~ to toggle ~evil-local-mode~.
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "<f12>") 'evil-local-mode)
+#+END_SRC
+
+Set ~,~ as ~evil-leader~.
+#+BEGIN_SRC emacs-lisp
+(require 'evil-leader)
+(evil-leader/set-leader ",")
+(global-evil-leader-mode)
+#+END_SRC
+
+Enable ~evil-local-mode~ for the following modes.
+
+#+BEGIN_SRC emacs-lisp
+(defvar enable-evil-mode-hooks
+  '(clojure-mode-hook
+    python-mode-hook
+    ruby-mode-hook
+    erlang-mode-hook
+    emacs-lisp-mode-hook
+    web-mode-hook
+    css-mode-hook
+    js2-mode-hook
+    js-mode-hook
+    html-mode-hook
+    ledger-mode-hook
+    yaml-mode-hook
+    elixir-mode-hook
+    org-mode-hook
+    shell-script-mode-hook
+    markdown-mode-hook))
+(mapc (lambda (hook)
+        (add-hook hook 'evil-local-mode))
+      enable-evil-mode-hooks)
+#+END_SRC
+
+Enable Evil plugins.
+#+BEGIN_SRC emacs-lisp
+(global-evil-surround-mode 1)
+(global-evil-matchit-mode 1)
+(global-evil-search-highlight-persist t)
+(evilnc-default-hotkeys)
+#+END_SRC
+
+Use ~SPACE~ for scrolling.
+#+BEGIN_SRC emacs-lisp
+(define-key evil-normal-state-map (kbd "SPC") 'evil-scroll-down)
+(define-key evil-normal-state-map (kbd "S-SPC") 'evil-scroll-up)
+#+END_SRC
+
+Bind some keys on the leader.
+#+BEGIN_SRC emacs-lisp
+(evil-leader/set-key "n" 'evil-search-highlight-persist-remove-all)
+(evil-leader/set-key "w" 'evil-write)
+
+(defun my-evil-reload-buffer ()
+  (interactive)
+  (evil-edit nil t))
+(evil-leader/set-key "e" 'my-evil-reload-buffer)
+#+END_SRC
+
+*** Perspective
+#+BEGIN_SRC emacs-lisp
+(require 'persp-projectile)
+(persp-mode)
+#+END_SRC

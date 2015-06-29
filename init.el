@@ -1,90 +1,24 @@
-(add-to-list 'load-path (expand-file-name "lisp" "~/.emacs.d/"))
-(add-to-list 'load-path (expand-file-name "lib" "~/.emacs.d/"))
-(add-to-list 'custom-theme-load-path (expand-file-name "themes" "~/.emacs.d/"))
+;;; init.el
+(defvar endless/init.org-message-depth 3
+  "What depth of init.org headers to message at startup.")
 
-(defconst *is-a-mac* (eq system-type 'darwin))
-
-;; =============
-;; General stuff
-;; =============
-(require 'init-melpa)
-
-(when *is-a-mac*
-  (require 'init-osx))
-
-
-;; common packages used across files
-(require 'init-common)
-
-;; define utility functions
-(require 'init-utils)
-
-;; bindings that don't belong anywhere else
-(require 'init-bindings)
-
-;; needs to be before init-gui to properly set smart-mode-line colors
-(require 'init-mode-line)
-
-;; (g)ui stuff
-(require 'init-gui)
-
-;; improvements for ido
-(require 'init-ido)
-
-;; window management
-(require 'init-windows)
-
-;; improvements for isearch
-(require 'init-isearch)
-
-(require 'init-misc)
-
-;; =======================
-;; Language specific stuff
-;; =======================
-(require 'init-python)
-(require 'init-yaml)
-(require 'init-web-mode)
-(require 'init-markdown)
-(require 'init-ledger)
-(require 'init-javascript)
-(require 'init-lisp)
-(require 'init-clojure)
-(require 'init-elixir)
-
-;; ===================
-;; Tools and Utilities
-;; ===================
-;; dired improvements
-(require 'init-dired)
-
-;; Org
-(require 'init-org)
-
-;; ack
-(require 'init-ack-ag)
-
-;; nicer naming of buffers for files with identical names
-(require 'init-uniquify)
-
-(require 'init-git)
-
-;; on-the-fly linting
-(require 'init-flycheck)
-
-;; auto-complete library
-(require 'init-company)
-
-;; project navigation
-(require 'init-projectile)
-
-;; vim emulation
-(require 'init-evil)
-
-;; workgroups/sessions management
-;; (require 'init-workgroups)
-(require 'init-perspective)
-
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(when (file-exists-p custom-file)
-  (load custom-file))
+(with-temp-buffer
+  (insert-file "~/.emacs.d/init.org")
+  (goto-char (point-min))
+  (search-forward "\n* init.org")
+  (while (not (eobp))
+    (forward-line 1)
+    (cond
+     ;; Report Headers
+     ((looking-at
+       (format "\\*\\{2,%s\\} +.*$" 
+               endless/init.org-message-depth))
+      (message "%s" (match-string 0)))
+     ;; Evaluate Code Blocks
+     ((looking-at "^#\\+BEGIN_SRC +emacs-lisp *$")
+      (let ((l (match-end 0)))
+        (search-forward "\n#+END_SRC")
+        (eval-region l (match-beginning 0))))
+     ;; Finish on the next level-1 header
+     ((looking-at "^\\* ")
+      (goto-char (point-max))))))
