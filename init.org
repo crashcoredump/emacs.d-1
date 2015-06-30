@@ -11,12 +11,13 @@
 #+TODO: WAITING(w@/!) HOLD(h@/!) | CANCELLED(c@/!)
 #+TAGS: export(e) noexport(n)
 #+STARTUP: fold nodlcheck lognotestate content
+#+HTML_HEAD_EXTRA: <link rel="stylesheet" type="text/css" href="themes/org/worg.css" />
 
 * init.org
 
 See ~init.el~ on how Org loads and interprets this file for initializing Emacs.
 
-The latest raw version of this file can be found at ...
+The latest raw version of this file can be found at https://github.com/john2x/emacs.d.
 
 This file was last exported: {{{time(%Y-%m-%d %H:%M)}}}
 
@@ -245,7 +246,8 @@ For a majority of programming modes, we want to indent immediately after a
 newline.
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "RET") 'newline-and-indent)
+(add-hook 'prog-mode-hook
+          (lambda () (local-set-key (kbd "RET") 'newline-and-indent)))
 #+END_SRC
 
 For a majority of programming languages, an underscore is part of a word or symbol.
@@ -793,7 +795,7 @@ Show git status indicators in the fringe.
  magit-restore-window-configuration t
  magit-completing-read-function 'magit-ido-completing-read)
 
-(global-set-key (kbd "C-c C-m") 'magit-status)
+(global-set-key (kbd "C-c m m") 'magit-status)
 #+END_SRC
 
 Make the Magit buffer take the entire frame.
@@ -832,7 +834,7 @@ Bind ~<F12>~ to toggle ~evil-local-mode~.
 (global-set-key (kbd "<f12>") 'evil-local-mode)
 #+END_SRC
 
-Set ~,~ as ~evil-leader~.
+Set the ~evil-leader~.
 #+BEGIN_SRC emacs-lisp
 (require 'evil-leader)
 (evil-leader/set-leader ",")
