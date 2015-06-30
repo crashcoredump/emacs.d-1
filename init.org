@@ -330,6 +330,7 @@ Bind undo/redo to sane bindings.
                  "GPG_AGENT_INFO"
                  "LANG"
                  "LC_CTYPE"
+                 "LEDGER_FILE"
                  "WORKON_HOME"))
     (add-to-list 'exec-path-from-shell-variables var)))
 (when (memq window-system '(mac ns))
@@ -912,4 +913,25 @@ Bind some keys on the leader.
 #+BEGIN_SRC emacs-lisp
 (require 'persp-projectile)
 (persp-mode)
+#+END_SRC
+
+*** Ledger
+#+BEGIN_SRC emacs-lisp
+(defconst *ledger-journal-path* "~/Dropbox/ledger/john.ledger")
+
+(add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
+
+(after-load 'flycheck
+  (require 'flycheck-ledger))
+
+(add-hook 'ledger-mode-hook 'goto-address-prog-mode)
+
+;; don't override the highlighting of each posted item
+;; in a xact if it is cleared/pending
+(setq ledger-fontify-xact-state-overrides nil)
+
+(defun ledger-open-my-journal ()
+  "Easy way to open my ledger journal"
+  (interactive)
+  (find-file *ledger-journal-path*))
 #+END_SRC
