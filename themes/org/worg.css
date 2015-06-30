@@ -53,6 +53,7 @@
 	-moz-box-shadow: 0 0 1em #777777;
 	-webkit-border-bottom-left-radius: 5px;
 	-moz-border-radius-bottomleft: 5px;
+    z-index: 999; /* make sure it stays on top of code blocks */
 	/* ensure doesn't flow off the screen when expanded */
 	max-height: 80%;
 	overflow: auto; }
