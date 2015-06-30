@@ -572,6 +572,23 @@ Tell ~virtualenvwrapper~ where ~$WORKON_HOME~ is.
   (message "WORKON_HOME env variable not set."))
 #+END_SRC
 
+When opening a Python file in a project with directory local variables
+set for the project's virtualenv, activate that virtualenv.
+#+BEGIN_SRC emacs-lisp
+;; e.g. in .dir-locals.el
+;; ((python-mode . ((project-venv-name . "myproject-env"))))
+
+(add-hook 'python-mode-hook (lambda ()
+                              (hack-local-variables)
+                              (when (boundp 'project-venv-name)
+                                (venv-workon project-venv-name))))
+#+END_SRC
+
+Show active virtualenv in mode line.
+#+BEGIN_SRC emacs-lisp
+(setq-default mode-line-format (cons '(:exec venv-current-name) mode-line-format))
+#+END_SRC
+
 **** YAML
 #+BEGIN_SRC emacs-lisp
 (add-auto-mode 'yaml-mode "\\.ya?ml\\'")
