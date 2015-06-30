@@ -53,23 +53,24 @@ Add MELPA package archive
 
 Define utility functions and macros used throughout this config file.
 
-*** ~require-package~
-Define ~require-package~ for easier installing of
+*** ~install-package~
+Define ~install-package~ for easier installing of
 packages.
 
 #+BEGIN_SRC emacs-lisp
 ;; copied from github.com/purcell/emacs.d
-(defun require-package (package &optional min-version no-refresh)
+(defun install-package (package &optional min-version no-refresh)
   "Install given PACKAGE, optionally requiring MIN-VERSION.
 If NO-REFRESH is non-nil, the available package lists will not be
 re-downloaded in order to locate PACKAGE."
+  (message "%s" package)
   (if (package-installed-p package min-version)
       t
     (if (or (assoc package package-archive-contents) no-refresh)
         (package-install package)
       (progn
         (package-refresh-contents)
-        (require-package package min-version t)))))
+        (install-package package min-version t)))))
 #+END_SRC
 
 *** ~after-load~
@@ -101,7 +102,7 @@ Conditionally set the following when on OS X (see *Constants*):
 #+BEGIN_SRC emacs-lisp
 (when *is-a-mac*
   ;; 1.
-  (require-package 'reveal-in-finder)
+  (install-package 'reveal-in-finder)
   (require 'reveal-in-finder)
   ;; 2.
   (setq mac-command-modifier 'meta)
@@ -114,125 +115,113 @@ Conditionally set the following when on OS X (see *Constants*):
 
 ** Install Packages
 
-Install all packages here using ~require-package~.
+Install all packages here using ~install-package~.
 
 #+BEGIN_SRC emacs-lisp
-;;;; Misc
-(require-package 'exec-path-from-shell)
+(defvar my-packages
+  '(;;;; Misc
+    exec-path-from-shell
+    undo-tree
+    bind-key
 
-(require-package 'undo-tree)
+    ;;;; Mode-line
+    diminish
+    smart-mode-line
 
-(require-package 'bind-key)
+    ;;;; UI
+    indent-guide
+    yascroll
+    highlight-symbol
+    smooth-scrolling
 
-;;;; Mode-line
+    ;;;; ido, ~M-x~
+    flx-ido
+    ido-ubiquitous
+    smex
+    idomenu
 
-(require-package 'diminish)
+    ;;;; Window and frame management
+    buffer-move
+    window-number
+    fullframe
 
-(require-package 'smart-mode-line)
+    ;;;; Interactive Search
+    anzu
 
-;;;; UI
+    ;;;; Completion
+    company
 
-(require-package 'indent-guide)
+    ;;;; Linting
+    flycheck
 
-(require-package 'yascroll)
+    ;;;; Dired
+    dired+
 
-(require-package 'highlight-symbol)
+    ;;;; Ack & Ag
+    ag
 
-(require-package 'smooth-scrolling)
+    ;;;; Git
+    magit
+    git-blame
+    git-commit-mode
+    git-rebase-mode
+    gitignore-mode
+    gitconfig-mode
+    git-messenger
+    git-gutter
 
-;;;; ido, ~M-x~
+    ;;;; Projectile
+    projectile
+    flx
+    project-explorer
 
-(require-package 'flx-ido)
+    ;;;; Perspective
+    perspective
 
-(require-package 'ido-ubiquitous)
+    ;;;; Evil (Vim)
+    evil
+    evil-surround
+    evil-leader
+    evil-matchit
+    evil-nerd-commenter
+    evil-search-highlight-persist
 
-(require-package 'smex)
+    ;;;; Ledger
+    ledger-mode
+    flycheck-ledger
 
-(require-package 'idomenu)
+    ;;;; Language specific
+    ;;;;;; Python
+    virtualenvwrapper
+    anaconda-mode
+    company-anaconda
+    nose
 
-;;;; Window and frame management
+    ;;;;;; YAML
+    yaml-mode
 
-(require-package 'buffer-move)
+    ;;;;;; HTML, CSS
+    web-mode
 
-(require-package 'window-number)
+    ;;;;;; Markdown
+    markdown-mode
 
-(require-package 'fullframe)
+    ;;;;;; Javascript
+    json-mode
+    js2-mode
 
-;;;; Interactive Search
+    ;;;;;; Lisp
+    paredit
+    rainbow-delimiters
+    highlight-parentheses)
+  "My packages!")
 
-(require-package 'anzu)
+;; loop over my-packages and install them
+(defun install-my-packages ()
+  (interactive)
+  (mapc 'install-package my-packages))
 
-;;;; Completion
-
-(require-package 'company)
-
-;;;; Linting
-
-(require-package 'flycheck)
-
-;;;; Dired
-(require-package 'dired+)
-
-;;;; Ack & Ag
-(require-package 'ag)
-
-;;;; Git
-(require-package 'magit)
-(require-package 'git-blame)
-(require-package 'git-commit-mode)
-(require-package 'git-rebase-mode)
-(require-package 'gitignore-mode)
-(require-package 'gitconfig-mode)
-(require-package 'git-messenger)
-(require-package 'git-gutter)
-
-;;;; Projectile
-(require-package 'projectile)
-(require-package 'flx)
-
-(require-package 'project-explorer)
-
-;;;; Perspective
-(require-package 'perspective)
-
-;;;; Evil (Vim)
-(require-package 'evil)
-(require-package 'evil-surround)
-(require-package 'evil-leader)
-(require-package 'evil-matchit)
-(require-package 'evil-nerd-commenter)
-(require-package 'evil-search-highlight-persist)
-
-;;;; Language specific
-;;;;;; Python
-(require-package 'virtualenvwrapper)
-
-(require-package 'anaconda-mode)
-(require-package 'company-anaconda)
-
-(require-package 'nose)
-
-;;;;;; YAML
-(require-package 'yaml-mode)
-
-;;;;;; HTML, CSS
-(require-package 'web-mode)
-
-;;;;;; Markdown
-(require-package 'markdown-mode)
-
-;;;;;; Javascript
-(require-package 'json-mode)
-(require-package 'js2-mode)
-
-;;;;;; Lisp
-(require-package 'paredit)
-(require-package 'rainbow-delimiters)
-(require-package 'highlight-parentheses)
-
-;;;; Ledger
-(require-package 'ledger-mode)
-(require-package 'flycheck-ledger)
+(install-my-packages)
 #+END_SRC
 
 ** Configure
