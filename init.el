@@ -7,7 +7,7 @@
 
 ;;; Code:
 
-(defvar endless/init.org-message-depth 3
+(defvar endless/init.org-message-depth 4
   "What depth of init.org headers to message at startup.")
 
 (with-temp-buffer

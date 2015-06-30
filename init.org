@@ -213,7 +213,10 @@ Install all packages here using ~install-package~.
     ;;;;;; Lisp
     paredit
     rainbow-delimiters
-    highlight-parentheses)
+    highlight-parentheses
+
+    ;;;;;; Clojure
+    cider)
   "My packages!")
 
 ;; loop over my-packages and install them
@@ -679,6 +682,32 @@ Check parentheses on save.
     (check-parens)))
 
 (add-hook 'after-save-hook 'maybe-check-parens)
+#+END_SRC
+
+**** Clojure
+
+Hide ~*nrepl-connection*~ and ~*nrepl-server*~ buffers.
+#+BEGIN_SRC emacs-lisp
+(setq nrepl-hide-special-buffers t)
+#+END_SRC
+
+Set some variables in CIDER REPL and some hooks.
+#+BEGIN_SRC emacs-lisp
+(setq cider-repl-use-clojure-font-lock t)
+(add-hook 'cider-repl-mode-hook 'subword-mode)
+(add-hook 'cider-repl-mode-hook 'paredit-mode)
+(add-hook 'cider-repl-mode-hook
+          (lambda () (setq show-trailing-whitespace nil)))
+#+END_SRC
+
+Show eldoc for Clojure.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+#+END_SRC
+
+Use clojure-mode for Clojurescript.
+#+BEGIN_SRC emacs-lisp
+(add-auto-mode 'clojure-mode "\\.cljs\\'")
 #+END_SRC
 
 *** Dired
