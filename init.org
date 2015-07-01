@@ -519,6 +519,13 @@ Enable ~company-mode~ globally.
 (add-hook 'after-init-hook #'global-company-mode)
 #+END_SRC
 
+*** Flycheck
+#+BEGIN_SRC emacs-lisp
+(setq flycheck-check-syntax-automatically '(save idle-change mode-enabled)
+      flycheck-idle-change-delay 0.8)
+(add-hook 'after-init-hook #'global-flycheck-mode)
+#+END_SRC
+
 *** Language Specific
 **** Python
 
@@ -840,13 +847,6 @@ Make the Magit buffer take the entire frame.
   (fullframe magit-status magit-mode-quit-window))
 #+END_SRC
 
-*** Flycheck
-#+BEGIN_SRC emacs-lisp
-(setq flycheck-check-syntax-automatically '(save idle-change mode-enabled)
-      flycheck-idle-change-delay 0.8)
-(add-hook 'after-init-hook #'global-flycheck-mode)
-#+END_SRC
-
 *** Projectile
 #+BEGIN_SRC emacs-lisp
 (projectile-global-mode)
@@ -863,6 +863,32 @@ Not actually projectile, but still project management related.
 (global-set-key (kbd "<f3>") 'project-explorer-toggle)
 #+END_SRC
 
+*** Perspective
+#+BEGIN_SRC emacs-lisp
+(require 'persp-projectile)
+(persp-mode)
+#+END_SRC
+
+*** Ledger
+#+BEGIN_SRC emacs-lisp
+(defconst *ledger-journal-path* "~/Dropbox/ledger/john.ledger")
+
+(add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
+
+(after-load 'flycheck
+  (require 'flycheck-ledger))
+
+(add-hook 'ledger-mode-hook 'goto-address-prog-mode)
+
+;; don't override the highlighting of each posted item
+;; in a xact if it is cleared/pending
+(setq ledger-fontify-xact-state-overrides nil)
+
+(defun ledger-open-my-journal ()
+  "Easy way to open my ledger journal"
+  (interactive)
+  (find-file *ledger-journal-path*))
+#+END_SRC
 *** Evil
 
 Bind ~<F12>~ to toggle ~evil-local-mode~.
@@ -925,31 +951,4 @@ Bind some keys on the leader.
   (interactive)
   (evil-edit nil t))
 (evil-leader/set-key "e" 'my-evil-reload-buffer)
-#+END_SRC
-
-*** Perspective
-#+BEGIN_SRC emacs-lisp
-(require 'persp-projectile)
-(persp-mode)
-#+END_SRC
-
-*** Ledger
-#+BEGIN_SRC emacs-lisp
-(defconst *ledger-journal-path* "~/Dropbox/ledger/john.ledger")
-
-(add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
-
-(after-load 'flycheck
-  (require 'flycheck-ledger))
-
-(add-hook 'ledger-mode-hook 'goto-address-prog-mode)
-
-;; don't override the highlighting of each posted item
-;; in a xact if it is cleared/pending
-(setq ledger-fontify-xact-state-overrides nil)
-
-(defun ledger-open-my-journal ()
-  "Easy way to open my ledger journal"
-  (interactive)
-  (find-file *ledger-journal-path*))
 #+END_SRC
