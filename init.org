@@ -548,10 +548,8 @@ Custom outline folding.
 #+END_SRC
 
 ***** Anaconda
-****** TODO fix ~anaconda~ setup
 
 Use Anaconda with ~company~ for code completion.
-(Not working at the time of writing)
 
 #+BEGIN_SRC emacs-lisp
 (require 'company-anaconda)
