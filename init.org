@@ -163,8 +163,6 @@ Install all packages here using ~install-package~.
     ;;;; Git
     magit
     git-blame
-    git-commit-mode
-    git-rebase-mode
     gitignore-mode
     gitconfig-mode
     git-messenger
