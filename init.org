@@ -205,6 +205,7 @@ Install all packages here using ~install-package~.
     paredit
     rainbow-delimiters
     highlight-parentheses
+    paren-face
 
     ;;;;;; Clojure
     cider)
@@ -660,7 +661,7 @@ them in a loop.
 
 (defun my-lisp-setup ()
   "Enable features useful in any Lisp mode."
-  (rainbow-delimiters-mode t)
+  ;; (rainbow-delimiters-mode t)
   ;; (hl-sexp-mode)
   (enable-paredit-mode)
   (turn-on-eldoc-mode)
@@ -678,6 +679,11 @@ Check parentheses on save.
     (check-parens)))
 
 (add-hook 'after-save-hook 'maybe-check-parens)
+#+END_SRC
+
+Dim parentheses for Lisps.
+#+BEGIN_SRC emacs-lisp
+(global-paren-face-mode)
 #+END_SRC
 
 **** Clojure
