@@ -73,14 +73,6 @@ re-downloaded in order to locate PACKAGE."
         (install-package package min-version t)))))
 #+END_SRC
 
-*** ~after-load~
-#+BEGIN_SRC emacs-lisp
-(defmacro after-load (feature &rest body)
-  "After FEATURE is loaded, evaluate BODY."
-  (declare (indent defun))
-  `(eval-after-load ,feature
-     '(progn ,@body)))
-#+END_SRC
 
 *** ~add-auto-mode~
 #+BEGIN_SRC emacs-lisp
@@ -314,7 +306,7 @@ Bind undo/redo to sane bindings.
 *** Shell
 #+BEGIN_SRC emacs-lisp
 ;; make these environment variables available in Emacs
-(after-load 'exec-path-from-shell
+(with-eval-after-load 'exec-path-from-shell
   (dolist (var '("SSH_AUTH_SOCK"
                  "SSH_AGENT_PID"
                  "GPG_AGENT_INFO"
@@ -370,8 +362,8 @@ highlighted when holding down movement keys.
   (add-hook hook 'highlight-symbol-mode)
   (add-hook hook 'highlight-symbol-nav-mode))
 
-(eval-after-load 'highlight-symbol
-  '(diminish 'highlight-symbol-mode))
+(with-eval-after-load 'highlight-symbol
+  (diminish 'highlight-symbol-mode))
 
 ;; http://emacs.stackexchange.com/questions/931
 (defun highlight-symbol-mode-post-command ()
@@ -638,7 +630,7 @@ We use ~js2-mode~ instead of the built-in ~js-mode~.
       js2-auto-indent-p t
       js2-bounce-indent-p nil)
 
-(after-load 'js2-mode
+(with-eval-after-load 'js2-mode
   (js2-imenu-extras-setup)
   (toggle-truncate-lines))
 #+END_SRC
@@ -739,7 +731,7 @@ Define some keybindings for ~dired~ for quick navigation.
 
 Setup ~dired+~.
 #+BEGIN_SRC emacs-lisp
-(after-load 'dired
+(with-eval-after-load 'dired
   (require 'dired+)
   (require 'dired-subtree)
   (require 'dired-filter)
@@ -839,7 +831,7 @@ Show git status indicators in the fringe.
 
 Make the Magit buffer take the entire frame.
 #+BEGIN_SRC emacs-lisp
-(after-load 'magit
+(with-eval-after-load 'magit
   (fullframe magit-status magit-mode-quit-window))
 #+END_SRC
 
@@ -885,7 +877,7 @@ Not actually projectile, but still project management related.
 
 #+BEGIN_SRC emacs-lisp
 
-(after-load 'flycheck
+(with-eval-after-load 'flycheck
   (require 'flycheck-ledger))
 
 #+END_SRC
