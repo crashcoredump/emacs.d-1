@@ -170,6 +170,7 @@ Install all packages here using ~install-package~.
 
     ;;;; Evil (Vim)
     evil
+    evil-anzu
     evil-surround
     evil-leader
     evil-matchit
@@ -926,6 +927,8 @@ Enable Evil plugins.
 (global-evil-matchit-mode 1)
 (global-evil-search-highlight-persist t)
 (evilnc-default-hotkeys)
+(with-eval-after-load 'evil
+  (require 'evil-anzu))
 #+END_SRC
 
 Use ~SPACE~ for scrolling.
