@@ -400,14 +400,15 @@ Theme of the month.
 (load-theme 'plan9 t)
 #+END_SRC
 
-**** Mode line
+**** Mode line (~smart-mode-line~)
 #+BEGIN_SRC emacs-lisp
 (which-function-mode)
 
 (sml/setup)
 
 (setq sml/name-width 20
-      sml/mode-width 10)
+      sml/mode-width 10
+      sml/theme nil)
 
 (add-to-list 'sml/hidden-modes " GG")
 (add-to-list 'sml/hidden-modes " wg")
