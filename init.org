@@ -73,7 +73,6 @@ re-downloaded in order to locate PACKAGE."
         (install-package package min-version t)))))
 #+END_SRC
 
-
 *** ~add-auto-mode~
 #+BEGIN_SRC emacs-lisp
 (defun add-auto-mode (mode &rest patterns)
@@ -878,9 +877,9 @@ Use ~perspective~ to manage multiple projects.
 (require 'persp-projectile)
 (persp-mode)
 
-(global-set-key (kbd "C-=") 'persp-prev)
-(global-set-key (kbd "C-\\") 'persp-next)
-(global-set-key (kbd "C-<delete>") 'persp-switch)
+(global-set-key (kbd "C-;") 'persp-prev)
+(global-set-key (kbd "C-'") 'persp-next)
+(global-set-key (kbd "C-/") 'persp-switch)
 #+END_SRC
 
 *** Ledger
