@@ -338,6 +338,9 @@ Configure UI stuff like:
 ;; highlight matching parentheses
 (show-paren-mode 1)
 
+;; show line numbers
+(global-linum-mode)
+
 ;; we use yascroll for the scrollbar instead
 (scroll-bar-mode -1)
 (global-yascroll-bar-mode 1)
@@ -436,6 +439,13 @@ Theme of the month.
   (lambda()
     (setq mode-name "erl")))
 
+#+END_SRC
+
+*** Ag
+
+Highlight search results in the ag buffer.
+#+BEGIN_SRC emacs-lisp
+(setq ag-highlight-search t)
 #+END_SRC
 
 *** ido, ~M-x~
@@ -812,6 +822,7 @@ Show git status indicators in the fringe.
 
 #+BEGIN_SRC emacs-lisp
 (global-git-gutter-mode 1)
+(git-gutter:linum-setup)
 (setq git-gutter:modified-sign "* "
       git-gutter:added-sign "+ "
       git-gutter:deleted-sign "- "
@@ -860,9 +871,16 @@ Not actually projectile, but still project management related.
 #+END_SRC
 
 *** Perspective
+
+Use ~perspective~ to manage multiple projects.
+
 #+BEGIN_SRC emacs-lisp
 (require 'persp-projectile)
 (persp-mode)
+
+(global-set-key (kbd "C-=") 'persp-prev)
+(global-set-key (kbd "C-\\") 'persp-next)
+(global-set-key (kbd "C-<delete>") 'persp-switch)
 #+END_SRC
 
 *** Ledger
@@ -921,7 +939,7 @@ Enable ~evil-local-mode~ for the following modes.
     yaml-mode-hook
     elixir-mode-hook
     org-mode-hook
-    shell-script-mode-hook
+    sh-mode-hook
     markdown-mode-hook))
 (mapc (lambda (hook)
         (add-hook hook 'evil-local-mode))
