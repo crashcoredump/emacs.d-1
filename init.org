@@ -844,9 +844,16 @@ Add custom ~org-agenda~ command. We'd like to see at a glance:
           (todo "TODO")))))
 #+END_SRC
 
-Enable font-locking for org-blocks.
+Enable font-locking for org source blocks.
 #+BEGIN_SRC emacs-lisp
 (setq org-src-fontify-natively t)
+#+END_SRC
+
+**** Journal
+
+Experiment with ~org-journal~ for a personal diary of sorts.
+#+BEGIN_SRC emacs-lisp
+(setq org-journal-dir (concat org-directory "/journal/"))
 #+END_SRC
 
 *** Git
@@ -955,6 +962,18 @@ Highlight nicknames so they're easier to spot.
 Use the ~services~ module to automatically attempt to identify with NickServ when connection to a server.
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'erc-modules 'services)
+#+END_SRC
+
+Save logs when leaving a channel.
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'erc-modules 'log)
+(setq erc-save-buffer-on-part t)
+(setq erc-log-channels-directory "~/.erc/logs/")
+#+END_SRC
+
+Render smiley icons, because why not ~:-)~?
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'erc-modules 'smiley)
 #+END_SRC
 
 Update erc modules.
