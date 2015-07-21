@@ -911,9 +911,9 @@ Use ~perspective~ to manage multiple projects.
 (require 'persp-projectile)
 (persp-mode)
 
-(global-set-key (kbd "C-;") 'persp-prev)
-(global-set-key (kbd "C-'") 'persp-next)
-(global-set-key (kbd "C-/") 'persp-switch)
+(global-set-key (kbd "M-[") 'persp-prev)
+(global-set-key (kbd "M-]") 'persp-next)
+(global-set-key (kbd "M-P") 'persp-switch)
 #+END_SRC
 
 *** ERC
