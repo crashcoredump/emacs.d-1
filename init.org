@@ -17,6 +17,7 @@
 #+HTML_HEAD_EXTRA: <style>#table-of-contents:hover #text-table-of-contents { display: block; }</style>
 #+HTML_HEAD_EXTRA: <style>#text-table-of-contents { display: none }</style>
 #+HTML_HEAD_EXTRA: <style>#text-table-of-contents ul { padding-left: 20px }</style>
+#+HTML_HEAD_EXTRA: <style>code { border: 1px solid lightgrey; background: #f1f1f1; padding: 2px}</style>
 
 * Introduction
 
