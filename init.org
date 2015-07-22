@@ -241,7 +241,10 @@ Install all packages here using ~install-package~.
     paren-face
 
     ;;;;;; Clojure
-    cider)
+    cider
+
+    ;;;;;; Org
+    org-journal)
   "My packages!")
 
 ;; loop over my-packages and install them
