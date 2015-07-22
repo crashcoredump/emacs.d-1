@@ -489,16 +489,10 @@ Highlight search results in the ag buffer.
 (ido-mode t)
 (ido-everywhere t)
 (flx-ido-mode t)
-;; auto-complete using ido everywhere
-(ido-ubiquitous-mode t)
-
-;; use smex to handle M-x
-(global-set-key [remap execute-extended-command] 'smex)
 
 (setq ido-enable-flex-matching t
       ido-use-filename-at-point nil
       ido-auto-merge-work-directories-length 0
-      ido-use-virtual-buffers t
 ;; Allow the same buffer to be open in different frames
       ido-default-buffer-method 'selected-window)
 #+END_SRC
@@ -507,12 +501,22 @@ Ignore dired buffers when using ~ido-switch-buffer~, as we're only interested
 in actual file buffers (and some internal buffers).
 
 #+BEGIN_SRC emacs-lisp
-;; ignore dired buffers from ido-switch-buffer
 (defun ido-ignore-dired-buffers (name)
-  (if (get-buffer name)
+  "Ignore dired buffers"
       (with-current-buffer name
-        (derived-mode-p 'dired-mode))))
+        (derived-mode-p 'dired-mode)))
 (add-to-list 'ido-ignore-buffers 'ido-ignore-dired-buffers)
+#+END_SRC
+
+Use ido in all interactions with ~M-x~ (i.e. provides ido-completion when doing ~M-x ledger-report~, etc.)
+#+BEGIN_SRC emacs-lisp
+(ido-ubiquitous-mode t)
+#+END_SRC
+
+Override ~M-x~ to use smex. Smex basically sorts commands by most-recently used.
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
 #+END_SRC
 
 *** Window and frame management
