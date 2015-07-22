@@ -5,15 +5,20 @@
 #+PROPERTY: header-args :tangle yes
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
-#+OPTIONS: H:4 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
+#+OPTIONS: H:3 num:nil toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t
 #+OPTIONS: skip:nil d:(HIDE) tags:not-in-toc
 #+TODO: SOMEDAY(s) TODO(t) INPROGRESS(i) WAITING(w@/!) NEEDSREVIEW(n@/!) | DONE(d)
 #+TODO: WAITING(w@/!) HOLD(h@/!) | CANCELLED(c@/!)
 #+TAGS: export(e) noexport(n)
 #+STARTUP: fold nodlcheck lognotestate content
-#+HTML_HEAD_EXTRA: <link rel="stylesheet" type="text/css" href="themes/org/worg.css" />
+#+HTML_HEAD_EXTRA: <style>.outline-3, .outline-4, .outline-5 { padding-left: 2em; };</style>
+#+HTML_HEAD_EXTRA: <style>#table-of-contents { float: right; border: 1px solid; overflow: auto; font-size: 14px; position: fixed; right: 0; top: 0; background: white; z-index: 999; max-height: 80%; }</style>
+#+HTML_HEAD_EXTRA: <style>#table-of-contents h2 { font-size: 14px; padding: 10px; }</style>
+#+HTML_HEAD_EXTRA: <style>#table-of-contents:hover #text-table-of-contents { display: block; }</style>
+#+HTML_HEAD_EXTRA: <style>#text-table-of-contents { display: none }</style>
+#+HTML_HEAD_EXTRA: <style>#text-table-of-contents ul { padding-left: 20px }</style>
 
-* init.org
+* Introduction
 
 See ~init.el~ on how Org loads and interprets this file for initializing Emacs.
 
@@ -21,7 +26,7 @@ The latest raw version of this file can be found at https://github.com/john2x/em
 
 This file was last exported: {{{time(%Y-%m-%d %H:%M)}}}
 
-** System paths and files
+* System paths and files
 Tell Emacs where to put packages installed from Melpa, where custom themes
 can be loaded and where customizations done with ~customize~ should be stored.
 
@@ -34,13 +39,13 @@ can be loaded and where customizations done with ~customize~ should be stored.
   (load custom-file))
 #+END_SRC
 
-** Constants
+* Constants
 #+BEGIN_SRC emacs-lisp
 (defconst *is-a-mac* (eq system-type 'darwin))
 #+END_SRC
 
-** Package Archives and Management
-*** MELPA
+* Package Archives and Management
+** MELPA
 Add MELPA package archive
 #+BEGIN_SRC emacs-lisp
 (require 'package)
@@ -49,11 +54,11 @@ Add MELPA package archive
 (package-initialize)
 #+END_SRC
 
-** Utility Functions and Macros
+* Utility Functions and Macros
 
 Define utility functions and macros used throughout this config file.
 
-*** ~install-package~
+** ~install-package~
 Define ~install-package~ for easier installing of
 packages.
 
@@ -73,7 +78,7 @@ re-downloaded in order to locate PACKAGE."
         (install-package package min-version t)))))
 #+END_SRC
 
-*** ~add-auto-mode~
+** ~add-auto-mode~
 #+BEGIN_SRC emacs-lisp
 (defun add-auto-mode (mode &rest patterns)
   "Add entries to `auto-mode-alist' to use `MODE' for all given file `PATTERNS'."
@@ -81,7 +86,7 @@ re-downloaded in order to locate PACKAGE."
     (add-to-list 'auto-mode-alist (cons pattern mode))))
 #+END_SRC
 
-*** Persistent scratch
+** Persistent scratch
 
 Persist the ~*scratch*~ buffer every 5 minutes, so we don't lose any possibly important data if/when Emacs crashes.[fn:1]
 #+BEGIN_SRC emacs-lisp
@@ -107,9 +112,9 @@ Persist the ~*scratch*~ buffer every 5 minutes, so we don't lose any possibly im
           (run-with-idle-timer 300 t 'save-persistent-scratch)))
 #+END_SRC
 
-** OS Specific
+* OS Specific
 
-*** OS X
+** OS X
 
 Conditionally set the following when on OS X (see *Constants*):
    1. Reveal file in current buffer in Finder.
@@ -130,15 +135,15 @@ Conditionally set the following when on OS X (see *Constants*):
                                     ((control)))))
 #+END_SRC
 
-*** TODO Linux
+** TODO Linux
 
 Try using this config on an Ubuntu or ArchLinux VM.
 
-*** TODO Windows
+** TODO Windows
 
 Try using this config on a Windows (7+) VM.
 
-** Install Packages
+* Install Packages
 
 Install all packages here using ~install-package~.
 
@@ -255,12 +260,12 @@ Install all packages here using ~install-package~.
 (install-my-packages)
 #+END_SRC
 
-** Configure
+* Configure
 
 Now that everything is installed and ready, we can begin
 configuring packages, modes, key bindings, etc.
 
-*** Misc
+** Misc
 
 For a majority of programming modes, we want to indent immediately after a
 newline.
@@ -341,7 +346,7 @@ Bind undo/redo to sane bindings.
 (global-set-key (kbd "M-Z") 'undo-tree-redo)
 #+END_SRC
 
-*** Shell
+** Shell
 #+BEGIN_SRC emacs-lisp
 ;; make these environment variables available in Emacs
 (with-eval-after-load 'exec-path-from-shell
@@ -357,7 +362,7 @@ Bind undo/redo to sane bindings.
   (exec-path-from-shell-initialize))
 #+END_SRC
 
-*** UI
+** UI
 
 Configure UI stuff like:
 - hide toolbars
@@ -425,13 +430,13 @@ create the new one."
 (setq highlight-symbol-idle-delay .1)
 #+END_SRC
 
-**** Font
+*** Font
 #+BEGIN_SRC emacs-lisp
 (set-frame-font (font-spec
                  :family "Essential PragmataPro"
                  :size 12) nil t)
 #+END_SRC
-**** Theme
+*** Theme
 
 Theme of the month.
 
@@ -439,7 +444,7 @@ Theme of the month.
 (load-theme 'plan9 t)
 #+END_SRC
 
-**** Mode line (~smart-mode-line~)
+*** Mode line (~smart-mode-line~)
 #+BEGIN_SRC emacs-lisp
 (which-function-mode)
 
@@ -477,14 +482,14 @@ Theme of the month.
 
 #+END_SRC
 
-*** Ag
+** Ag
 
 Highlight search results in the ag buffer.
 #+BEGIN_SRC emacs-lisp
 (setq ag-highlight-search t)
 #+END_SRC
 
-*** ido, ~M-x~
+** ido, ~M-x~
 #+BEGIN_SRC emacs-lisp
 (ido-mode t)
 (ido-everywhere t)
@@ -519,7 +524,7 @@ Override ~M-x~ to use smex. Smex basically sorts commands by most-recently used.
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 #+END_SRC
 
-*** Window and frame management
+** Window and frame management
 
 Use ~M-g [h|j|k|l]~ to swap buffers between windows.
 Also allow using numbers to switch window focus.
@@ -539,7 +544,7 @@ Also allow using numbers to switch window focus.
 (window-number-meta-mode 1)
 #+END_SRC
 
-*** Interactive searching
+** Interactive searching
 
 #+BEGIN_SRC emacs-lisp
 (global-anzu-mode t)
@@ -553,8 +558,8 @@ Also allow using numbers to switch window focus.
 (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
 #+END_SRC
 
-*** Completion
-**** company
+** Completion
+*** company
 
 Enable ~company-mode~ globally.
 
@@ -562,15 +567,15 @@ Enable ~company-mode~ globally.
 (add-hook 'after-init-hook #'global-company-mode)
 #+END_SRC
 
-*** Flycheck
+** Flycheck
 #+BEGIN_SRC emacs-lisp
 (setq flycheck-check-syntax-automatically '(save idle-change mode-enabled)
       flycheck-idle-change-delay 0.8)
 (add-hook 'after-init-hook #'global-flycheck-mode)
 #+END_SRC
 
-*** Language Specific
-**** Python
+** Language Specific
+*** Python
 
 Custom outline folding.
 
@@ -592,7 +597,7 @@ Custom outline folding.
 (add-hook 'python-mode-hook 'my-python-hook)
 #+END_SRC
 
-***** Anaconda
+**** Anaconda
 
 Use Anaconda with ~company~ for code completion.
 
@@ -602,7 +607,7 @@ Use Anaconda with ~company~ for code completion.
 (add-hook 'python-mode-hook 'anaconda-mode)
 #+END_SRC
 
-***** Virtual Environments
+**** Virtual Environments
 
 Tell ~virtualenvwrapper~ where ~$WORKON_HOME~ is.
 
@@ -630,12 +635,12 @@ Show active virtualenv in mode line.
 (setq-default mode-line-format (cons '(:exec venv-current-name) mode-line-format))
 #+END_SRC
 
-**** YAML
+*** YAML
 #+BEGIN_SRC emacs-lisp
 (add-auto-mode 'yaml-mode "\\.ya?ml\\'")
 #+END_SRC
 
-**** HTML/CSS (~web-mode~)
+*** HTML/CSS (~web-mode~)
 
 We use ~web-mode~ for working with templates and enable it for the following
 filetypes.
@@ -664,12 +669,12 @@ for that project, telling it to use the appropriate engine.
         ("django"    . "\\.html\\'")))
 #+END_SRC
 
-**** Markdown
+*** Markdown
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.\\(md\\|markdown\\)\\'" . markdown-mode))
 #+END_SRC
 
-**** Javascript
+*** Javascript
 
 We use ~js2-mode~ instead of the built-in ~js-mode~.
 
@@ -688,7 +693,7 @@ We use ~js2-mode~ instead of the built-in ~js-mode~.
   (toggle-truncate-lines))
 #+END_SRC
 
-**** Lisp
+*** Lisp
 
 Use ~pp-eval-expression~. The same as ~eval-expression~, but pretty-prints output.
 #+BEGIN_SRC emacs-lisp
@@ -737,7 +742,7 @@ Dim parentheses for Lisps.
 (global-paren-face-mode)
 #+END_SRC
 
-**** Clojure
+*** Clojure
 
 Hide ~*nrepl-connection*~ and ~*nrepl-server*~ buffers.
 #+BEGIN_SRC emacs-lisp
@@ -763,7 +768,7 @@ Use clojure-mode for Clojurescript.
 (add-auto-mode 'clojure-mode "\\.cljs\\'")
 #+END_SRC
 
-*** Dired
+** Dired
 
 Don't hide details in dired.
 #+BEGIN_SRC emacs-lisp
@@ -810,7 +815,7 @@ Omit uninteresting files in ~dired~.
 (add-hook 'dired-mode-hook (lambda () (dired-omit-mode)))
 #+END_SRC
 
-*** Org
+** Org
 
 Tell Org where our orgfiles are.
 #+BEGIN_SRC emacs-lisp
@@ -856,14 +861,14 @@ Enable font-locking for org source blocks.
 (setq org-src-fontify-natively t)
 #+END_SRC
 
-**** Journal
+*** Journal
 
 Experiment with ~org-journal~ for a personal diary of sorts.
 #+BEGIN_SRC emacs-lisp
 (setq org-journal-dir (concat org-directory "/journal/"))
 #+END_SRC
 
-*** Git
+** Git
 
 Show git status indicators in the fringe.
 
@@ -879,7 +884,7 @@ Show git status indicators in the fringe.
 (global-set-key (kbd "M-g M-n") 'git-gutter:next-hunk)
 #+END_SRC
 
-**** Magit
+*** Magit
 
 #+BEGIN_SRC emacs-lisp
 ;; skip warning introduced by 1.4.0
@@ -901,7 +906,7 @@ Make the Magit buffer take the entire frame.
   (fullframe magit-status magit-mode-quit-window))
 #+END_SRC
 
-*** Projectile
+** Projectile
 #+BEGIN_SRC emacs-lisp
 (projectile-global-mode)
 
@@ -917,7 +922,7 @@ Not actually projectile, but still project management related.
 (global-set-key (kbd "<f3>") 'project-explorer-toggle)
 #+END_SRC
 
-*** Perspective
+** Perspective
 
 Use ~perspective~ to manage multiple projects.
 
@@ -930,7 +935,7 @@ Use ~perspective~ to manage multiple projects.
 (global-set-key (kbd "M-P") 'persp-switch)
 #+END_SRC
 
-*** ERC
+** ERC
 
 Change ~header-line~ face when disconnected.
 #+BEGIN_SRC emacs-lisp
@@ -958,7 +963,7 @@ Interactive function to create a new frame and perspectives for erc and automati
   (erc :server "irc.freenode.net" :port "6667" :nick "john2x"))
 #+END_SRC
 
-**** Modules
+*** Modules
 
 Highlight nicknames so they're easier to spot.
 #+BEGIN_SRC emacs-lisp
@@ -988,7 +993,7 @@ Update erc modules.
 (erc-update-modules)
 #+END_SRC
 
-*** Ledger
+** Ledger
 #+BEGIN_SRC emacs-lisp
 (defconst *ledger-journal-path* "~/Dropbox/ledger/john.ledger")
 
@@ -1012,7 +1017,7 @@ Update erc modules.
   (require 'flycheck-ledger))
 
 #+END_SRC
-*** Evil
+** Evil
 
 Bind ~<F12>~ to toggle ~evil-local-mode~.
 #+BEGIN_SRC emacs-lisp

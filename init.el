@@ -13,7 +13,6 @@
 (with-temp-buffer
   (insert-file-contents "~/.emacs.d/init.org")
   (goto-char (point-min))
-  (search-forward "\n* init.org")  ;; Evaluate only sub-trees of "* init.org"
   (while (not (eobp))
     (forward-line 1)
     (cond
@@ -26,9 +25,6 @@
      ((looking-at "^#\\+BEGIN_SRC +emacs-lisp *$")
       (let ((l (match-end 0)))
         (search-forward "\n#+END_SRC")
-        (eval-region l (match-beginning 0))))
-     ;; Finish on the next level-1 header
-     ((looking-at "^\\* ")
-      (goto-char (point-max))))))
+        (eval-region l (match-beginning 0)))))))
 
 ;;; init.el ends here
