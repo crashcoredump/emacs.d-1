@@ -249,6 +249,7 @@ Install all packages here using ~install-package~.
     cider
 
     ;;;;;; Org
+    htmlize
     org-journal)
   "My packages!")
 
