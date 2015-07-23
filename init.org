@@ -966,6 +966,38 @@ Interactive function to create a new frame and perspectives for erc and automati
   (erc :server "irc.freenode.net" :port "6667" :nick "john2x"))
 #+END_SRC
 
+When using a VPN, freenode.net (and probably other servers as well) requires us to authenticate with SASL.
+Unfortunately, SASL support isn't implemented yet in the default ERC package bundled with Emacs.
+
+There's an ~erc-sasl~ library[fn:2] but it requires patching the ~erc-login~ function so it sends the appropriate
+CAP request for SASL. Until ~erc-sasl~ gets merged into the main ERC package, we'll have to patch it here.
+#+BEGIN_SRC emacs-lisp
+(require 'erc-sasl)
+(add-to-list 'erc-sasl-server-regexp-list "irc\\.freenode\\.net")
+
+(defun erc-login ()
+  "Perform user authentication at the IRC server. (PATCHED)"
+  (erc-log (format "login: nick: %s, user: %s %s %s :%s"
+		   (erc-current-nick)
+		   (user-login-name)
+		   (or erc-system-name (system-name))
+		   erc-session-server
+		   erc-session-user-full-name))
+  (if erc-session-password
+      (erc-server-send (format "PASS %s" erc-session-password))
+    (message "Logging in without password"))
+  (when (and (featurep 'erc-sasl) (erc-sasl-use-sasl-p))
+    (erc-server-send "CAP REQ :sasl"))
+  (erc-server-send (format "NICK %s" (erc-current-nick)))
+  (erc-server-send
+   (format "USER %s %s %s :%s"
+	   ;; hacked - S.B.
+	   (if erc-anonymous-login erc-email-userid (user-login-name))
+	   "0" "*"
+	   erc-session-user-full-name))
+  (erc-update-mode-line))
+#+END_SRC
+
 *** Modules
 
 Highlight nicknames so they're easier to spot.
@@ -1089,4 +1121,5 @@ Bind some keys on the leader.
 * Footnotes
 
 [fn:1] Copied from http://doc.rix.si/org/fsem.html
+[fn:2] https://github.com/joseph-gay/erc-sasl
 
