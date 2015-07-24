@@ -2,6 +2,7 @@
 
 custom.el
 .authinfo
+.ircauthinfo
 auto-save-list/
 
 *.el~

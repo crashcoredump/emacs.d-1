@@ -994,6 +994,12 @@ CAP request for SASL. Until ~erc-sasl~ gets merged into the main ERC package, we
   (erc-update-mode-line))
 #+END_SRC
 
+~.ircauthinfo~ is where we store our NickServ passwords, so we don't have to type it in all the time
+(and it breaks ~erc-login~ prompt when SASL is required).
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auth-sources "~/.emacs.d/.ircauthinfo")
+#+END_SRC
+
 *** Modules
 
 Highlight nicknames so they're easier to spot.
