@@ -37,6 +37,7 @@
 
 ;;; Code:
 
+(require 'erc-backend)
 (eval-when-compile (require 'cl))
 
 (defvar erc-sasl-use-sasl t
