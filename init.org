@@ -164,7 +164,7 @@ Install all packages here using ~install-package~.
     indent-guide
     yascroll
     highlight-symbol
-    smooth-scrolling
+    smooth-scroll
 
     ;;;; ido, ~M-x~
     flx-ido
@@ -322,13 +322,9 @@ Automatically creating missing parent directories when visiting a new file.
 Configure smooth scrolling.
 
 #+BEGIN_SRC emacs-lisp
-(setq smooth-scroll-margin 5
-      scroll-conservatively 9999
-      scroll-preserve-screen-position t
-      scroll-margin 1
-      scroll-conservatively 0
-      scroll-up-aggressively 0.01
-      scroll-down-aggressively 0.01)
+(require 'smooth-scroll)
+(smooth-scroll-mode 1)
+(setq smooth-scroll/vscroll-step-size 4)
 #+END_SRC
 
 When visiting buffers with the same name, uniqify them instead of the default of
