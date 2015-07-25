@@ -48,7 +48,7 @@ can be loaded and where customizations done with ~customize~ should be stored.
 
 * Package Archives and Management
 ** MELPA
-Add MELPA package archive
+Using bleeding edge? I, too, like to live dangerously.
 #+BEGIN_SRC emacs-lisp
 (require 'package)
 (add-to-list 'package-archives
@@ -171,6 +171,7 @@ Install all packages here using ~install-package~.
     ido-ubiquitous
     smex
     idomenu
+    ido-vertical-mode
 
     ;;;; Window and frame management
     buffer-move
@@ -499,6 +500,13 @@ Highlight search results in the ag buffer.
       ido-auto-merge-work-directories-length 0
 ;; Allow the same buffer to be open in different frames
       ido-default-buffer-method 'selected-window)
+#+END_SRC
+
+Render ido candidates vertically.
+#+BEGIN_SRC emacs-lisp
+(ido-vertical-mode t)
+(setq ido-vertical-define-keys 'C-n-and-C-p-only
+      ido-vertical-show-count t)
 #+END_SRC
 
 Ignore dired buffers when using ~ido-switch-buffer~, as we're only interested
