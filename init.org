@@ -1008,6 +1008,11 @@ CAP request for SASL. Until ~erc-sasl~ gets merged into the main ERC package, we
 (add-to-list 'auth-sources "~/.emacs.d/.ircauthinfo")
 #+END_SRC
 
+Set the prompt to use the channel name.
+#+BEGIN_SRC emacs-lisp
+(setq erc-prompt  (lambda () (concat (buffer-name) "> ")))
+#+END_SRC
+
 *** Modules
 
 Highlight nicknames so they're easier to spot.
@@ -1033,7 +1038,6 @@ Render smiley icons, because why not ~:-)~?
 (add-to-list 'erc-modules 'smiley)
 #+END_SRC
 
-Update erc modules.
 #+BEGIN_SRC emacs-lisp
 (erc-update-modules)
 #+END_SRC
