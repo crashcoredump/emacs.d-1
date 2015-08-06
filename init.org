@@ -406,7 +406,8 @@ highlighted when holding down movement keys.
 #+BEGIN_SRC emacs-lisp
 (dolist (hook '(prog-mode-hook html-mode-hook))
   (add-hook hook 'highlight-symbol-mode)
-  (add-hook hook 'highlight-symbol-nav-mode))
+  (add-hook hook 'highlight-symbol-nav-mode)
+  (add-hook hook 'hs-minor-mode))
 
 (with-eval-after-load 'highlight-symbol
   (diminish 'highlight-symbol-mode))
@@ -775,6 +776,29 @@ Use clojure-mode for Clojurescript.
 (add-auto-mode 'clojure-mode "\\.cljs\\'")
 #+END_SRC
 
+** Code Folding (HideShow)
+
+Show the contents of the first 40 characters of the folded text and the number of lines folded.
+#+BEGIN_SRC emacs-lisp
+  (setq hs-set-up-overlay
+        (defun my-display-code-line-counts (ov)
+          (when (eq 'code (overlay-get ov 'hs))
+            (overlay-put ov 'display
+                         (propertize
+                          (format " ... %s <%d> ... "
+                                  (replace-regexp-in-string
+                                   "\n" ""
+                                   (replace-regexp-in-string
+                                    "\\`[ \t]*" ""
+                                    (replace-regexp-in-string
+                                     "[ \t]*\\'" ""
+                                     (buffer-substring (overlay-start ov)
+                                                       (+ (overlay-start ov) 40)))))
+                                  (count-lines (overlay-start ov)
+                                               (overlay-end ov)))
+                          'face 'diff-removed)))))
+#+END_SRC
+
 ** Dired
 
 Don't hide details in dired.
@@ -943,6 +967,11 @@ Use ~perspective~ to manage multiple projects.
 #+END_SRC
 
 ** ERC
+
+Set some default values.
+#+BEGIN_SRC emacs-lisp
+(setq erc-nick "john2x")
+#+END_SRC
 
 Change ~header-line~ face when disconnected.
 #+BEGIN_SRC emacs-lisp
