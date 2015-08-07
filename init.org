@@ -396,7 +396,7 @@ Configure UI stuff like:
 
 ;; enable indent-guide for the following modes only
 (setq indent-guide-recursive nil)
-(add-hook 'python-mode-hook 'indent-guide-mode)
+;; (add-hook 'python-mode-hook 'indent-guide-mode)
 (add-hook 'web-mode-hook 'indent-guide-mode)
 #+END_SRC
 
@@ -760,7 +760,7 @@ Use clojure-mode for Clojurescript.
 Show the contents of the first 40 characters of the folded text and the number of lines folded.
 #+BEGIN_SRC emacs-lisp
   (setq hs-set-up-overlay
-        (defun my-display-code-line-counts (ov)
+        (defun my-hs-overlay (ov)
           (when (eq 'code (overlay-get ov 'hs))
             (overlay-put ov 'display
                          (propertize
@@ -768,9 +768,9 @@ Show the contents of the first 40 characters of the folded text and the number o
                                   (replace-regexp-in-string
                                    "\n" ""
                                    (replace-regexp-in-string
-                                    "\\`[ \t]*" ""
+                                    "^[ \t]*" ""
                                     (replace-regexp-in-string
-                                     "[ \t]*\\'" ""
+                                     "[ \t]*$" ""
                                      (buffer-substring (overlay-start ov)
                                                        (+ (overlay-start ov) 40)))))
                                   (count-lines (overlay-start ov)
