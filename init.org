@@ -584,27 +584,6 @@ Enable ~company-mode~ globally.
 
 ** Language Specific
 *** Python
-
-Custom outline folding.
-
-#+BEGIN_SRC emacs-lisp
-(defun py-outline-level ()
-  (let (buffer-invisibility-spec)
-    (save-excursion
-      (skip-chars-forward "\t ")
-      (current-column))))
-
-(defun my-python-hook ()
-  ; outline uses this regexp to find headers. I match lines with no indent and indented "class"
-  ; and "def" lines.
-  (setq outline-regexp "[^ \t]\\|[ \t]*\\(def\\|class\\) ")
-  ; enable our level computation
-  (setq outline-level 'py-outline-level)
-  (outline-minor-mode t))
-
-(add-hook 'python-mode-hook 'my-python-hook)
-#+END_SRC
-
 **** Anaconda
 
 Use Anaconda with ~company~ for code completion.
