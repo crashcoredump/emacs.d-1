@@ -968,9 +968,10 @@ Use ~perspective~ to manage multiple projects.
 
 ** ERC
 
-Set some default values.
+Set some default values. We don't want to auto-reconnect since it could flood the channel and get us temporarily banned.
 #+BEGIN_SRC emacs-lisp
-(setq erc-nick "john2x")
+(setq erc-nick "john2x"
+      erc-server-auto-reconnect nil)
 #+END_SRC
 
 Change ~header-line~ face when disconnected.
