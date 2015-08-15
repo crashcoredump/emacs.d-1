@@ -1089,29 +1089,10 @@ Set the ~evil-leader~.
 (global-evil-leader-mode)
 #+END_SRC
 
-Enable ~evil-local-mode~ for the following modes.
+evil-mode is [[https://bitbucket.org/lyro/evil/issues/544/disparity-between-local-and-global-mode][meant to be enabled globally]].
 
 #+BEGIN_SRC emacs-lisp
-(defvar enable-evil-mode-hooks
-  '(clojure-mode-hook
-    python-mode-hook
-    ruby-mode-hook
-    erlang-mode-hook
-    emacs-lisp-mode-hook
-    web-mode-hook
-    css-mode-hook
-    js2-mode-hook
-    js-mode-hook
-    html-mode-hook
-    ledger-mode-hook
-    yaml-mode-hook
-    elixir-mode-hook
-    org-mode-hook
-    sh-mode-hook
-    markdown-mode-hook))
-(mapc (lambda (hook)
-        (add-hook hook 'evil-local-mode))
-      enable-evil-mode-hooks)
+(evil-mode 1)
 #+END_SRC
 
 Enable Evil plugins.
@@ -1139,6 +1120,18 @@ Bind some keys on the leader.
   (interactive)
   (evil-edit nil t))
 (evil-leader/set-key "e" 'my-evil-reload-buffer)
+#+END_SRC
+
+By default, ~C-u~ is bound to Emacs' ~universal-argument~ function, a rather important function used by various commands.
+But in Vim, ~C-u~ is supposed to scroll up half a page, and that has been burned into muscle memory by now.
+As a compromise, we bind ~universal-argument~ to ~M-u~ (which previously performs ~upcase-word~, something we rarely, if ever, use),
+and use Vim's version of ~C-u~ to scroll up half a page.
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-u") 'universal-argument)
+(define-key universal-argument-map (kbd "M-u") 'universal-argument-more)
+(with-eval-after-load 'evil-maps
+  (define-key evil-motion-state-map (kbd "C-u") 'evil-scroll-up))
 #+END_SRC
 
 * Footnotes
