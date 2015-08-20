@@ -433,10 +433,23 @@ create the new one."
 
 *** Font
 #+BEGIN_SRC emacs-lisp
-(set-frame-font (font-spec
-                 :family "Essential PragmataPro"
-                 :size 12) nil t)
+(defvar Input-font '(:family "Input" :size 12))
+(defvar PragmataPro-font '(:family "Essential PragmataPro" :size 12))
+
+(set-frame-font (apply 'font-spec Input-font) nil t)
 #+END_SRC
+
+#+RESULTS:
+
+Easily switch fonts.
+#+BEGIN_SRC emacs-lisp
+  (defun my-switch-font (font)
+    (interactive "sSwitch font (1. Input 2. PragmataPro): ")
+    (cond ((string= font "1") (set-frame-font (apply 'font-spec Input-font) nil t))
+          ((string= font "2") (set-frame-font (apply 'font-spec PragmataPro-font) nil t))
+          (t (message "Invalid option. Please choose 1 or 2."))))
+#+END_SRC
+
 *** Theme
 
 Theme of the month.
