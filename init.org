@@ -1090,9 +1090,46 @@ Render smiley icons, because why not ~:-)~?
 #+END_SRC
 ** Evil
 
-Bind ~<F12>~ to toggle ~evil-local-mode~.
+Evil is [[https://bitbucket.org/lyro/evil/issues/544/disparity-between-local-and-global-mode][meant to be enabled globally]].
+
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "<f12>") 'evil-local-mode)
+(evil-mode 1)
+#+END_SRC
+
+But we only want Normal state for particular modes, and use Emacs state everywhere else.
+
+So first, we set Emacs state as Evil's default state.
+#+BEGIN_SRC emacs-lisp
+(setq-default evil-default-state 'emacs)
+#+END_SRC
+
+We then clear Evil's whitelists of modes that should start in a particular state,
+so they all start in Emacs state.
+
+#+BEGIN_SRC emacs-lisp
+(setq-default evil-insert-state-modes '())
+#+END_SRC
+
+Then we specify which modes we want Normal state for.
+#+BEGIN_SRC emacs-lisp
+  (setq-default evil-normal-state-modes
+    '(clojure-mode
+      python-mode
+      ruby-mode
+      erlang-mode
+      emacs-lisp-mode
+      web-mode
+      css-mode
+      js2-mode
+      js-mode
+      html-mode
+      ledger-mode
+      yaml-mode
+      elixir-mode
+      org-mode
+      sh-mode
+      elm-mode
+      markdown-mode))
 #+END_SRC
 
 Set the ~evil-leader~.
@@ -1100,12 +1137,6 @@ Set the ~evil-leader~.
 (require 'evil-leader)
 (evil-leader/set-leader ",")
 (global-evil-leader-mode)
-#+END_SRC
-
-evil-mode is [[https://bitbucket.org/lyro/evil/issues/544/disparity-between-local-and-global-mode][meant to be enabled globally]].
-
-#+BEGIN_SRC emacs-lisp
-(evil-mode 1)
 #+END_SRC
 
 Enable Evil plugins.
