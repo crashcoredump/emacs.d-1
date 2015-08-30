@@ -251,6 +251,13 @@ Install all packages here using ~install-package~.
     ;;;;;; Clojure
     cider
 
+    ;;;;;; Misc
+    haskell-mode
+    ghc
+    flycheck-haskell
+    purescript-mode
+    elm-mode
+
     ;;;;;; Org
     htmlize
     org-journal)
@@ -438,8 +445,6 @@ create the new one."
 
 (set-frame-font (apply 'font-spec Input-font) nil t)
 #+END_SRC
-
-#+RESULTS:
 
 Easily switch fonts.
 #+BEGIN_SRC emacs-lisp
@@ -766,6 +771,17 @@ Show eldoc for Clojure.
 Use clojure-mode for Clojurescript.
 #+BEGIN_SRC emacs-lisp
 (add-auto-mode 'clojure-mode "\\.cljs\\'")
+#+END_SRC
+
+*** Elm
+#+BEGIN_SRC emacs-lisp
+(add-hook 'elm-mode-hook #'elm-oracle-setup-completion)
+#+END_SRC
+*** Haskell
+#+BEGIN_SRC emacs-lisp
+(add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+(eval-after-load 'flycheck
+  '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
 #+END_SRC
 
 ** Code Folding (HideShow)
@@ -1128,7 +1144,9 @@ Then we specify which modes we want Normal state for.
       elixir-mode
       org-mode
       sh-mode
+      haskell-mode
       elm-mode
+      purescript-mode
       markdown-mode))
 #+END_SRC
 
