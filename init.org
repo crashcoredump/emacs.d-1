@@ -1138,6 +1138,7 @@ Then we specify which modes we want Normal state for.
       css-mode
       js2-mode
       js-mode
+      json-mode
       html-mode
       ledger-mode
       yaml-mode
