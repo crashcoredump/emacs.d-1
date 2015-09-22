@@ -165,6 +165,7 @@ Install all packages here using ~install-package~.
     yascroll
     highlight-symbol
     smooth-scroll
+    nlinum
 
     ;;;; ido, ~M-x~
     flx-ido
@@ -386,8 +387,8 @@ Configure UI stuff like:
 ;; highlight matching parentheses
 (show-paren-mode 1)
 
-;; show line numbers
-(global-linum-mode)
+;; show line numbers (use nlinum-mode; linum-mode is slow)
+(global-nlinum-mode)
 
 ;; we use yascroll for the scrollbar instead
 (scroll-bar-mode -1)
