@@ -874,6 +874,28 @@ Enable font-locking for org source blocks.
 (setq org-src-fontify-natively t)
 #+END_SRC
 
+Don't evaluate source blocks when exporting.
+#+BEGIN_SRC emacs-lisp
+(setq org-export-babel-evaluate nil)
+#+END_SRC
+
+*** Publishing
+
+Configure publishing of our orgfiles.
+#+BEGIN_SRC emacs-lisp
+  (setq org-publish-project-alist
+        `(("orgfiles"
+           :base-directory "~/Dropbox/orgfiles"
+           :publishing-directory "~/Dropbox/orgfiles/published"
+           :publishing-function org-html-publish-to-html
+           :section-numbers nil
+           :table-of-contents nil
+           :recursive t
+           :auto-sitemap t
+           :sitemap-filename "sitemap.org"
+           :sitemap-title "orgfiles")))
+#+END_SRC
+
 *** Journal
 
 Experiment with ~org-journal~ for a personal diary of sorts.
