@@ -949,12 +949,17 @@ Make the Magit buffer take the entire frame.
 ** Projectile
 #+BEGIN_SRC emacs-lisp
 (projectile-global-mode)
+(persp-mode)
 
 (setq projectile-switch-project-action 'projectile-dired
       projectile-completion-system 'ido
       projectile-enable-caching t)
 
 (global-set-key (kbd "C-x p") 'projectile-find-file)
+
+(require 'nameframe-projectile)
+(require 'nameframe-perspective)
+(global-set-key (kbd "M-P") 'nameframe-switch-frame)
 #+END_SRC
 
 Not actually projectile, but still project management related.
@@ -962,18 +967,6 @@ Not actually projectile, but still project management related.
 (global-set-key (kbd "<f3>") 'project-explorer-toggle)
 #+END_SRC
 
-** Perspective
-
-Use ~perspective~ to manage multiple projects.
-
-#+BEGIN_SRC emacs-lisp
-(require 'persp-projectile)
-(persp-mode)
-
-(global-set-key (kbd "M-[") 'persp-prev)
-(global-set-key (kbd "M-]") 'persp-next)
-(global-set-key (kbd "M-P") 'persp-switch)
-#+END_SRC
 
 ** ERC
 
