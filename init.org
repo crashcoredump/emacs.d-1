@@ -184,6 +184,7 @@ Install all packages here using ~install-package~.
 
     ;;;; Completion
     company
+    company-emoji
 
     ;;;; Linting
     flycheck
@@ -444,7 +445,12 @@ create the new one."
 (defvar Input-font '(:family "Input" :size 12))
 (defvar PragmataPro-font '(:family "Essential PragmataPro" :size 12))
 
-(set-frame-font (apply 'font-spec Input-font) nil t)
+(set-frame-font (apply 'font-spec PragmataPro-font) nil t)
+
+(when *is-a-mac*
+  (set-fontset-font
+     t 'symbol
+     (font-spec :family "Apple Color Emoji") nil 'prepend))
 #+END_SRC
 
 Easily switch fonts.
@@ -464,42 +470,9 @@ Theme of the month.
 (load-theme 'plan9 t)
 #+END_SRC
 
-*** Mode line (~smart-mode-line~)
+*** Mode line
 #+BEGIN_SRC emacs-lisp
 (which-function-mode)
-
-(sml/setup)
-
-(setq sml/name-width 20
-      sml/mode-width 10
-      sml/theme nil)
-
-(add-to-list 'sml/hidden-modes " GG")
-(add-to-list 'sml/hidden-modes " wg")
-(add-to-list 'sml/hidden-modes " ElDoc")
-(add-to-list 'sml/hidden-modes " AC")
-(add-to-list 'sml/hidden-modes " WSC")
-(add-to-list 'sml/hidden-modes " Outl")
-(add-to-list 'sml/hidden-modes " hs")
-(add-to-list 'sml/hidden-modes " Midje")
-(add-to-list 'sml/hidden-modes " cider")
-(add-to-list 'sml/hidden-modes " Par")
-
-(add-to-list 'sml/replacer-regexp-list '("^~/Projects/" ":PRJ:"))
-
-(add-hook 'emacs-lisp-mode-hook
-  (lambda()
-    (setq mode-name "el")))
-(add-hook 'python-mode-hook
-  (lambda()
-    (setq mode-name "py")))
-(add-hook 'clojure-mode-hook
-  (lambda()
-    (setq mode-name "clj")))
-(add-hook 'erlang-mode-hook
-  (lambda()
-    (setq mode-name "erl")))
-
 #+END_SRC
 
 ** Ag
