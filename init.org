@@ -137,6 +137,12 @@ Conditionally set the following when on OS X (see *Constants*):
                                     ((control)))))
 #+END_SRC
 
+The following adds packages installed by Homebrew to our load-path.
+#+BEGIN_SRC emacs-lisp
+  (let ((default-directory "/usr/local/share/emacs/site-lisp/"))
+    (normal-top-level-add-subdirs-to-load-path))
+#+END_SRC
+
 ** TODO Linux
 
 Try using this config on an Ubuntu or ArchLinux VM.
@@ -952,8 +958,8 @@ Make the Magit buffer take the entire frame.
 
 (global-set-key (kbd "C-x p") 'projectile-find-file)
 
-(require 'nameframe-projectile)
-(require 'nameframe-perspective)
+(nameframe-projectile-init)
+(nameframe-perspective-init)
 (global-set-key (kbd "M-P") 'nameframe-switch-frame)
 #+END_SRC
 
@@ -961,7 +967,6 @@ Not actually projectile, but still project management related.
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "<f3>") 'project-explorer-toggle)
 #+END_SRC
-
 
 ** ERC
 
@@ -986,15 +991,16 @@ Change ~header-line~ face when disconnected.
 (setq erc-header-line-face-method 'erc-update-header-line-show-disconnected)
 #+END_SRC
 
-Interactive function to create a new frame and perspectives for erc and automatically connect to preset servers.
+Interactive function to create a frame dedicated to ERC and automatically connect to preset servers.
 (We don't join channels automatically as it could take too long.)
+
 #+BEGIN_SRC emacs-lisp
-(defun my-erc-perspective ()
-  "Switch or create to a perspective called 'erc' and connect to IRC"
+(defun my-erc-frame ()
+  "Switch or create to a frame called 'ERC' and connect to IRC"
   (interactive)
-  (select-frame (make-frame '((name . "ERC") (minibuffer . t))))
-  (persp-switch "freenode.net")
-  (erc :server "irc.freenode.net" :port "6667" :nick "john2x"))
+  (nameframe-with-frame "ERC"
+    (persp-switch "freenode.net")
+    (erc :server "irc.freenode.net" :port "6667" :nick "john2x")))
 #+END_SRC
 
 When using a VPN, freenode.net (and probably other servers as well) requires us to authenticate with SASL.
