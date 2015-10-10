@@ -1124,30 +1124,41 @@ Set some default variables.
 Define multiple email accounts so we can switch between them.
 
 #+BEGIN_SRC emacs-lisp
-    (setq mu4e-user-mail-address-list '("john2x@gmail.com"
-                                        "john@collabspot.com"))
+  (setq mu4e-user-mail-address-list '("john2x@gmail.com"
+                                      "john@collabspot.com"
+                                      "john@prospecthive.com"))
 
-    (defvar my-mu4e-account-alist
-      '(("personal"
-         (mu4e-sent-folder "/personal/[Gmail]/Sent Mail")
-         (mu4e-drafts-folder "/personal/drafts")
-         (mu4e-compose-signature "john2x.com")
-         (user-mail-address "john2x@gmail.com")
-         (smtpmail-smtp-user "john2x@gmail.com")
-         (smtpmail-default-smtp-server "smtp.gmail.com")
-         (smtpmail-smtp-server "smtp.gmail.com")
-         (smtpmail-stream-type starttls)
-         (smtpmail-smtp-service 587))
-        ("collabspot"
-         (mu4e-sent-folder "/collabspot/[Gmail]/Sent Mail")
-         (mu4e-drafts-folder "/collabspot/drafts")
-         (mu4e-compose-signature "collabspot.com")
-         (user-mail-address "john@collabspot.com")
-         (smtpmail-smtp-user "john@collabspot.com")
-         (smtpmail-default-smtp-server "smtp.gmail.com")
-         (smtpmail-smtp-server "smtp.gmail.com")
-         (smtpmail-stream-type starttls)
-         (smtpmail-smtp-service 587))))
+  (defvar my-mu4e-account-alist
+    '(("personal"
+       (mu4e-sent-folder "/personal/[Gmail]/Sent Mail")
+       (mu4e-drafts-folder "/personal/drafts")
+       (mu4e-compose-signature "john2x.com")
+       (user-mail-address "john2x@gmail.com")
+       (smtpmail-smtp-user "john2x@gmail.com")
+       (smtpmail-default-smtp-server "smtp.gmail.com")
+       (smtpmail-smtp-server "smtp.gmail.com")
+       (smtpmail-stream-type starttls)
+       (smtpmail-smtp-service 587))
+      ("collabspot"
+       (mu4e-sent-folder "/collabspot/[Gmail]/Sent Mail")
+       (mu4e-drafts-folder "/collabspot/drafts")
+       (mu4e-compose-signature "collabspot.com")
+       (user-mail-address "john@collabspot.com")
+       (smtpmail-smtp-user "john@collabspot.com")
+       (smtpmail-default-smtp-server "smtp.gmail.com")
+       (smtpmail-smtp-server "smtp.gmail.com")
+       (smtpmail-stream-type starttls)
+       (smtpmail-smtp-service 587))
+      ("prospecthive"
+       (mu4e-sent-folder "/prospecthive/[Gmail]/Sent Mail")
+       (mu4e-drafts-folder "/prospecthive/drafts")
+       (mu4e-compose-signature "prospecthive.com")
+       (user-mail-address "john@prospecthive.com")
+       (smtpmail-smtp-user "john@prospecthive.com")
+       (smtpmail-default-smtp-server "smtp.gmail.com")
+       (smtpmail-smtp-server "smtp.gmail.com")
+       (smtpmail-stream-type starttls)
+       (smtpmail-smtp-service 587))))
 #+END_SRC
 
 Function to select an account when composing an email.
@@ -1184,32 +1195,52 @@ Define some shortcuts to common folders.
 
 #+BEGIN_SRC emacs-lisp
 (setq mu4e-maildir-shortcuts
-    '(("/personal/INBOX"               . ?p)
-      ("/collabspot/INBOX"             . ?c)))
+    '(("/personal/INBOX"               . ?j)
+      ("/collabspot/INBOX"             . ?c)
+      ("/prospecthive/INBOX"           . ?p)))
 #+END_SRC
 
 Define bookmarks.
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'mu4e-bookmarks
-  '("maildir:/personal/INBOX AND date:today..now OR maildir:/collabspot/INBOX AND date:today..now" "Today's inbox" ?i))
+  (add-to-list 'mu4e-bookmarks
+    '((concat "maildir:/personal/INBOX AND date:today..now"
+              " OR maildir:/prospecthive/INBOX AND date:today..now"
+              " OR maildir:/collabspot/INBOX AND date:today..now") "Today's inbox" ?i))
 #+END_SRC
 
 Define custom headers.
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'mu4e-header-info-custom
-    '(:important .
-      ( :name "Important"
-        :shortname "Impt"
-        :help "Tagged as important by Gmail"
-        :function
-        (lambda (msg)
-          (if (member "\\Important" (mu4e-message-field msg :tags))
-              "*"
-            " ")))))
+    '(:important . (:name "Important"
+                    :shortname "Impt"
+                    :help "Tagged as important by Gmail"
+                    :function
+                    (lambda (msg)
+                      (if (member "\\Important" (mu4e-message-field msg :tags))
+                          "*"
+                        " ")))))
+
+  (add-to-list
+   'mu4e-header-info-custom
+   '(:account . (:name "Account"
+                 :shortname "Acct"
+                 :help "Account name"
+                 :function
+                 (lambda (msg)
+                   (let ((maildir (mu4e-message-field msg :maildir)))
+                     (cl-flet ((starts-with (s begins)
+                                            (cond ((>= (length s) (length begins))
+                                               (string-equal (substring s 0 (length begins))
+                                                             begins))
+                                                  (t nil))))
+                       (cond ((starts-with maildir "/collabspot") "collabspot")
+                             ((starts-with maildir "/prospecthive") "prospecthive")
+                             (t "personal"))))))))
 
   (setq mu4e-headers-fields '((:human-date . 12)
+                              (:account . 10)
                               (:flags . 6)
                               (:important . 4)
                               (:mailing-list . 10)
