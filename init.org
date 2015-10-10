@@ -1075,6 +1075,198 @@ Render smiley icons, because why not ~:-)~?
 (erc-update-modules)
 #+END_SRC
 
+** Mail
+
+~mu4e~ is a mail client for Emacs. It works in conjunction with ~offlineimap~
+to provide a nice interface to read and send mail.
+
+Set some default variables.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'mu4e)
+  (require 'smtpmail)
+  (require 'starttls)
+
+  (setq mu4e-update-interval 300)
+
+  (setq user-mail-address "john2x@gmail.com"
+        user-full-name  "John Del Rosario"
+        mu4e-compose-signature "john2x.com")
+
+  (setq mu4e-maildir "~/mail"
+        mu4e-sent-folder "/personal/[Gmail]/Sent Mail"
+        mu4e-drafts-folder "/personal/drafts"
+        mu4e-trash-folder "/personal/[Gmail]/Trash"
+        mu4e-refile-folder "/personal/archive")
+
+  (setq mu4e-headers-skip-duplicates t)
+
+  ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
+  (setq mu4e-sent-messages-behavior 'delete)
+
+  ;; set mu4e as the default mail program
+  (setq mail-user-agent 'mu4e-user-agent)
+
+  ;; kill compose buffer instead of just hiding it
+  (setq message-kill-buffer-on-exit t)
+
+  (setq mu4e-view-show-addresses t)
+
+  (setq message-send-mail-function 'smtpmail-send-it
+        smtpmail-stream-type 'starttls
+        smtpmail-default-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-user "john2x@gmail.com"
+        smtpmail-smtp-service 587
+        starttls-extra-arguments '("--x509cafile" "/usr/local/etc/openssl/cert.pem"))
+#+END_SRC
+
+Define multiple email accounts so we can switch between them.
+
+#+BEGIN_SRC emacs-lisp
+    (setq mu4e-user-mail-address-list '("john2x@gmail.com"
+                                        "john@collabspot.com"))
+
+    (defvar my-mu4e-account-alist
+      '(("personal"
+         (mu4e-sent-folder "/personal/[Gmail]/Sent Mail")
+         (mu4e-drafts-folder "/personal/drafts")
+         (mu4e-compose-signature "john2x.com")
+         (user-mail-address "john2x@gmail.com")
+         (smtpmail-smtp-user "john2x@gmail.com")
+         (smtpmail-default-smtp-server "smtp.gmail.com")
+         (smtpmail-smtp-server "smtp.gmail.com")
+         (smtpmail-stream-type starttls)
+         (smtpmail-smtp-service 587))
+        ("collabspot"
+         (mu4e-sent-folder "/collabspot/[Gmail]/Sent Mail")
+         (mu4e-drafts-folder "/collabspot/drafts")
+         (mu4e-compose-signature "collabspot.com")
+         (user-mail-address "john@collabspot.com")
+         (smtpmail-smtp-user "john@collabspot.com")
+         (smtpmail-default-smtp-server "smtp.gmail.com")
+         (smtpmail-smtp-server "smtp.gmail.com")
+         (smtpmail-stream-type starttls)
+         (smtpmail-smtp-service 587))))
+#+END_SRC
+
+Function to select an account when composing an email.
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-mu4e-set-account ()
+    "Set the account for composing a message."
+    (let* ((account
+            (if mu4e-compose-parent-message
+                (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
+                  (string-match "/\\(.*?\\)/" maildir)
+                  (match-string 1 maildir))
+              (completing-read (format "Compose with account: (%s) "
+                                       (mapconcat #'(lambda (var) (car var))
+                                                  my-mu4e-account-alist "/"))
+                               (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
+                               nil t nil nil (caar my-mu4e-account-alist))))
+           (account-vars (cdr (assoc account my-mu4e-account-alist))))
+      (if account-vars
+          (mapc #'(lambda (var)
+                    (set (car var) (cadr var)))
+                account-vars)
+        (error "No email account found"))))
+
+  (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
+
+  (add-hook 'message-send-hook
+    (lambda ()
+      (unless (yes-or-no-p "Are you sure you want to send this?")
+        (signal 'quit nil))))
+#+END_SRC
+
+Define some shortcuts to common folders.
+
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-maildir-shortcuts
+    '(("/personal/INBOX"               . ?p)
+      ("/collabspot/INBOX"             . ?c)))
+#+END_SRC
+
+Define bookmarks.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'mu4e-bookmarks
+  '("maildir:/personal/INBOX AND date:today..now OR maildir:/collabspot/INBOX AND date:today..now" "Today's inbox" ?i))
+#+END_SRC
+
+Define custom headers.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'mu4e-header-info-custom
+    '(:important .
+      ( :name "Important"
+        :shortname "Impt"
+        :help "Tagged as important by Gmail"
+        :function
+        (lambda (msg)
+          (if (member "\\Important" (mu4e-message-field msg :tags))
+              "*"
+            " ")))))
+
+  (setq mu4e-headers-fields '((:human-date . 12)
+                              (:flags . 6)
+                              (:important . 4)
+                              (:mailing-list . 10)
+                              (:from-or-to . 22)
+                              (:subject)))
+
+#+END_SRC
+
+Improve rendering of HTML only emails.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'mu4e-contrib)
+  (setq mu4e-html2text-command 'mu4e-shr2text)
+#+END_SRC
+
+Enable org-mode support when writing emails, so we can send pretty HTML emails.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'org-mu4e)
+  (setq org-mu4e-convert-to-html t)
+
+  ;; when composing an email, switch on the special mu4e/orgmode mode
+  (define-key mu4e-compose-mode-map (kbd "C-c o") 'org~mu4e-mime-switch-headers-or-body)
+#+END_SRC
+
+Use dired to select and attach files.
+
+#+BEGIN_SRC emacs-lisp
+(require 'gnus-dired)
+;; make the `gnus-dired-mail-buffers' function also work on
+;; message-mode derived modes, such as mu4e-compose-mode
+(defun gnus-dired-mail-buffers ()
+  "Return a list of active message buffers."
+  (let (buffers)
+    (save-current-buffer
+      (dolist (buffer (buffer-list t))
+        (set-buffer buffer)
+        (when (and (derived-mode-p 'message-mode)
+                (null message-sent-message-via))
+          (push (buffer-name buffer) buffers))))
+    (nreverse buffers)))
+
+(setq gnus-dired-mail-mode 'mu4e-user-agent)
+(add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
+#+END_SRC
+
+Interactive function to switch to a frame dedicated for mu4e.
+
+#+BEGIN_SRC emacs-lisp
+(defun my-mu4e-frame ()
+  "Switch or create to a frame called 'mu4e' and connect to IRC"
+  (interactive)
+  (nameframe-with-frame "mu4e"
+    (persp-switch "mu4e")
+    (mu4e)))
+#+END_SRC
+
 ** Ledger
 #+BEGIN_SRC emacs-lisp
 (defconst *ledger-journal-path* "~/Dropbox/ledger/john.ledger")
