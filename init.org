@@ -1207,6 +1207,16 @@ Define bookmarks.
     '((concat "maildir:/personal/INBOX AND date:today..now"
               " OR maildir:/prospecthive/INBOX AND date:today..now"
               " OR maildir:/collabspot/INBOX AND date:today..now") "Today's inbox" ?i))
+
+  (add-to-list 'mu4e-bookmarks
+    '((concat "maildir:/personal/INBOX AND date:3d..now"
+              " OR maildir:/prospecthive/INBOX AND date:3d..now"
+              " OR maildir:/collabspot/INBOX AND date:3d..now") "Recent inbox" ?3))
+
+  (add-to-list 'mu4e-bookmarks
+    '((concat "maildir:/personal/[Gmail]/\"All Mail\" AND date:3d..now"
+              " OR maildir:/prospecthive/[Gmail]/\"All Mail\" AND date:3d..now"
+              " OR maildir:/collabspot/[Gmail]/\"All Mail\" AND date:3d..now") "Recent all mail" ?a))
 #+END_SRC
 
 Define custom headers.
