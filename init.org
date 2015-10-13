@@ -1113,6 +1113,10 @@ Set some default variables.
 
   (setq mu4e-view-show-addresses t)
 
+  ;; disable trailing whitespace when in mu4e
+  (add-hook 'mu4e-headers-mode-hook (lambda () (setq-local show-trailing-whitespace nil)))
+  (add-hook 'mu4e-view-mode-hook (lambda () (setq-local show-trailing-whitespace nil)))
+
   (setq message-send-mail-function 'smtpmail-send-it
         smtpmail-stream-type 'starttls
         smtpmail-default-smtp-server "smtp.gmail.com"
