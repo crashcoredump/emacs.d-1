@@ -265,6 +265,7 @@ Install all packages here using ~install-package~.
     flycheck-haskell
     purescript-mode
     elm-mode
+    mu4e-alert
 
     ;;;;;; Org
     htmlize
@@ -1079,7 +1080,8 @@ Render smiley icons, because why not ~:-)~?
 ** Mail
 
 ~mu4e~ is a mail client for Emacs. It works in conjunction with ~offlineimap~
-to provide a nice interface to read and send mail.
+to provide a nice interface to read and send mail. Note that ~mu4e~ is installed
+via OS package manager (i.e. Homebrew).
 
 Set some default variables.
 
@@ -1222,6 +1224,9 @@ Define bookmarks.
     '((concat "maildir:/personal/[Gmail]/\"All Mail\" AND date:3d..now"
               " OR maildir:/prospecthive/[Gmail]/\"All Mail\" AND date:3d..now"
               " OR maildir:/collabspot/[Gmail]/\"All Mail\" AND date:3d..now") "Recent all mail" ?a))
+
+  (add-to-list 'mu4e-bookmarks
+    '("flag:flagged" "Flagged" ?f))
 #+END_SRC
 
 Define custom headers.
@@ -1311,6 +1316,18 @@ Interactive function to switch to a frame dedicated for mu4e.
   (nameframe-with-frame "mu4e"
     (persp-switch "mu4e")
     (mu4e)))
+#+END_SRC
+
+Show unread emails in mode-line (via ~mu4e-alert~ package).
+
+#+BEGIN_SRC emacs-lisp
+  (setq mu4e-alert-interesting-mail-query
+        (concat "(maildir:/personal/INBOX AND date:today..now"
+                " OR maildir:/prospecthive/INBOX AND date:today..now"
+                " OR maildir:/collabspot/INBOX AND date:today..now)"
+                " AND flag:unread"))
+
+  (mu4e-alert-enable-mode-line-display)
 #+END_SRC
 
 ** Ledger
