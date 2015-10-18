@@ -960,8 +960,8 @@ Make the Magit buffer take the entire frame.
 
 (global-set-key (kbd "C-x p") 'projectile-find-file)
 
-(nameframe-projectile-init)
-(nameframe-perspective-init)
+(nameframe-projectile-mode t)
+(nameframe-perspective-mode t)
 (global-set-key (kbd "M-P") 'nameframe-switch-frame)
 #+END_SRC
 
