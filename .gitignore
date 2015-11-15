@@ -1,6 +1,6 @@
 .DS_Store
 
-custom.el
+#custom.el
 .authinfo
 .ircauthinfo
 auto-save-list/
