@@ -13,7 +13,9 @@
      ("reg" "ledger -f %(ledger-file) reg")
      ("payee" "ledger -f %(ledger-file) reg @%(payee)")
      ("account" "ledger -f %(ledger-file) reg %(account)")
-     ("weekly expenses" "ledger -f %(ledger-file) reg --period-sort '(-amount)' --real --effective --weekly -p 'this month' Expenses"))))
+     ("weekly expenses" "ledger -f %(ledger-file) reg --period-sort '(-amount)' --real --effective --weekly -p 'this month' Expenses")
+     ("monthly expenses total" "ledger -f %(ledger-file) reg --period-sort '(-amount)' --real --effective --monthly -p 'this year' Expenses --collapse")
+     ("monthly expenses" "ledger -f %(ledger-file) reg --period-sort '(-amount)' --real --effective --monthly -p 'this year' Expenses"))))
  '(org-agenda-files (quote ("~/orgfiles/notes.org" "~/orgfiles/todo.org")))
  '(safe-local-variable-values (quote ((project-venv-name . "prospecthive")))))
 (custom-set-faces

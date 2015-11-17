@@ -156,128 +156,131 @@ Try using this config on a Windows (7+) VM.
 Install all packages here using ~install-package~.
 
 #+BEGIN_SRC emacs-lisp
-(defvar my-packages
-  '(;;;; Misc
-    exec-path-from-shell
-    undo-tree
-    bind-key
+  (defvar my-packages
+    '(;;;; Misc
+      exec-path-from-shell
+      undo-tree
+      bind-key
+      nameframe
 
-    ;;;; Mode-line
-    diminish
-    smart-mode-line
+      ;;;; Mode-line
+      diminish
+      smart-mode-line
 
-    ;;;; UI
-    indent-guide
-    yascroll
-    highlight-symbol
-    smooth-scroll
-    nlinum
+      ;;;; UI
+      indent-guide
+      yascroll
+      highlight-symbol
+      smooth-scroll
+      nlinum
 
-    ;;;; ido, ~M-x~
-    flx-ido
-    ido-ubiquitous
-    smex
-    idomenu
-    ido-vertical-mode
+      ;;;; ido, ~M-x~
+      flx-ido
+      ido-ubiquitous
+      smex
+      idomenu
+      ido-vertical-mode
 
-    ;;;; Window and frame management
-    buffer-move
-    window-number
-    fullframe
+      ;;;; Window and frame management
+      buffer-move
+      window-number
+      fullframe
 
-    ;;;; Interactive Search
-    anzu
+      ;;;; Interactive Search
+      anzu
 
-    ;;;; Completion
-    company
-    company-emoji
+      ;;;; Completion
+      company
+      company-emoji
 
-    ;;;; Linting
-    flycheck
+      ;;;; Linting
+      flycheck
 
-    ;;;; Dired
-    dired+
+      ;;;; Dired
+      dired+
 
-    ;;;; Ack & Ag
-    ag
+      ;;;; Ack & Ag
+      ag
 
-    ;;;; Git
-    magit
-    git-blame
-    gitignore-mode
-    gitconfig-mode
-    git-messenger
-    git-gutter
+      ;;;; Git
+      magit
+      git-blame
+      gitignore-mode
+      gitconfig-mode
+      git-messenger
+      git-gutter
 
-    ;;;; Projectile
-    projectile
-    flx
-    project-explorer
+      ;;;; Projectile
+      projectile
+      flx
+      project-explorer
+      nameframe-projectile
 
-    ;;;; Perspective
-    perspective
+      ;;;; Perspective
+      perspective
+      nameframe-perspective
 
-    ;;;; Evil (Vim)
-    evil
-    evil-anzu
-    evil-surround
-    evil-leader
-    evil-matchit
-    evil-nerd-commenter
-    evil-search-highlight-persist
+      ;;;; Evil (Vim)
+      evil
+      evil-anzu
+      evil-surround
+      evil-leader
+      evil-matchit
+      evil-nerd-commenter
+      evil-search-highlight-persist
 
-    ;;;; Ledger
-    ledger-mode
-    flycheck-ledger
+      ;;;; Ledger
+      ledger-mode
+      flycheck-ledger
 
-    ;;;; Language specific
-    ;;;;;; Python
-    virtualenvwrapper
-    anaconda-mode
-    company-anaconda
-    nose
+      ;;;; Language specific
+      ;;;;;; Python
+      virtualenvwrapper
+      anaconda-mode
+      company-anaconda
+      nose
 
-    ;;;;;; YAML
-    yaml-mode
+      ;;;;;; YAML
+      yaml-mode
 
-    ;;;;;; HTML, CSS
-    web-mode
+      ;;;;;; HTML, CSS
+      web-mode
 
-    ;;;;;; Markdown
-    markdown-mode
+      ;;;;;; Markdown
+      markdown-mode
 
-    ;;;;;; Javascript
-    json-mode
-    js2-mode
+      ;;;;;; Javascript
+      json-mode
+      js2-mode
 
-    ;;;;;; Lisp
-    paredit
-    rainbow-delimiters
-    highlight-parentheses
-    paren-face
+      ;;;;;; Lisp
+      paredit
+      rainbow-delimiters
+      highlight-parentheses
+      paren-face
 
-    ;;;;;; Clojure
-    cider
+      ;;;;;; Clojure
+      cider
 
-    ;;;;;; Misc
-    haskell-mode
-    ghc
-    flycheck-haskell
-    purescript-mode
-    elm-mode
-    mu4e-alert
+      ;;;;;; Misc
+      haskell-mode
+      ghc
+      flycheck-haskell
+      purescript-mode
+      elm-mode
+      mu4e-alert
 
-    ;;;;;; Org
-    htmlize
-    org-journal)
-  "My packages!")
+      ;;;;;; Org
+      htmlize
+      org-journal)
+    "My packages!")
 
-;; loop over my-packages and install them
-(defun install-my-packages ()
-  (interactive)
-  (mapc 'install-package my-packages))
+  ;; loop over my-packages and install them
+  (defun install-my-packages ()
+    (interactive)
+    (mapc 'install-package my-packages))
 
-(install-my-packages)
+  (install-my-packages)
 #+END_SRC
 
 * Configure
@@ -1094,7 +1097,7 @@ Set some default variables.
 
   (setq user-mail-address "john2x@gmail.com"
         user-full-name  "John Del Rosario"
-        mu4e-compose-signature "john2x.com")
+        mu4e-compose-signature "john2x.com\nSent from GNU Emacs")
 
   (setq mu4e-maildir "~/mail"
         mu4e-sent-folder "/personal/[Gmail]/Sent Mail"
@@ -1114,6 +1117,7 @@ Set some default variables.
   (setq message-kill-buffer-on-exit t)
 
   (setq mu4e-view-show-addresses t)
+  (setq mu4e-attachment-dir "~/Downloads/Attachments/")
 
   ;; disable trailing whitespace when in mu4e
   (add-hook 'mu4e-headers-mode-hook (lambda () (setq-local show-trailing-whitespace nil)))
@@ -1139,7 +1143,7 @@ Define multiple email accounts so we can switch between them.
     '(("personal"
        (mu4e-sent-folder "/personal/[Gmail]/Sent Mail")
        (mu4e-drafts-folder "/personal/drafts")
-       (mu4e-compose-signature "john2x.com")
+       (mu4e-compose-signature "john2x.com\nSent from GNU Emacs")
        (user-mail-address "john2x@gmail.com")
        (smtpmail-smtp-user "john2x@gmail.com")
        (smtpmail-default-smtp-server "smtp.gmail.com")
@@ -1149,7 +1153,7 @@ Define multiple email accounts so we can switch between them.
       ("collabspot"
        (mu4e-sent-folder "/collabspot/[Gmail]/Sent Mail")
        (mu4e-drafts-folder "/collabspot/drafts")
-       (mu4e-compose-signature "collabspot.com")
+       (mu4e-compose-signature "collabspot.com\nSent from GNU Emacs")
        (user-mail-address "john@collabspot.com")
        (smtpmail-smtp-user "john@collabspot.com")
        (smtpmail-default-smtp-server "smtp.gmail.com")
@@ -1159,7 +1163,7 @@ Define multiple email accounts so we can switch between them.
       ("prospecthive"
        (mu4e-sent-folder "/prospecthive/[Gmail]/Sent Mail")
        (mu4e-drafts-folder "/prospecthive/drafts")
-       (mu4e-compose-signature "prospecthive.com")
+       (mu4e-compose-signature "prospecthive.com\nSent from GNU Emacs")
        (user-mail-address "john@prospecthive.com")
        (smtpmail-smtp-user "john@prospecthive.com")
        (smtpmail-default-smtp-server "smtp.gmail.com")
@@ -1211,14 +1215,9 @@ Define bookmarks.
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'mu4e-bookmarks
-    '((concat "maildir:/personal/INBOX AND date:today..now"
-              " OR maildir:/prospecthive/INBOX AND date:today..now"
-              " OR maildir:/collabspot/INBOX AND date:today..now") "Today's inbox" ?i))
-
-  (add-to-list 'mu4e-bookmarks
-    '((concat "maildir:/personal/INBOX AND date:3d..now"
-              " OR maildir:/prospecthive/INBOX AND date:3d..now"
-              " OR maildir:/collabspot/INBOX AND date:3d..now") "Recent inbox" ?3))
+    '((concat "maildir:/personal/[Gmail]/\"Sent Mail\" AND date:3d..now"
+              " OR maildir:/prospecthive/[Gmail]/\"Sent Mail\" AND date:3d..now"
+              " OR maildir:/collabspot/[Gmail]/\"Sent Mail\" AND date:3d..now") "Recent sent mail" ?s))
 
   (add-to-list 'mu4e-bookmarks
     '((concat "maildir:/personal/[Gmail]/\"All Mail\" AND date:3d..now"
@@ -1226,7 +1225,17 @@ Define bookmarks.
               " OR maildir:/collabspot/[Gmail]/\"All Mail\" AND date:3d..now") "Recent all mail" ?a))
 
   (add-to-list 'mu4e-bookmarks
+    '((concat "maildir:/personal/INBOX AND date:3d..now"
+              " OR maildir:/prospecthive/INBOX AND date:3d..now"
+              " OR maildir:/collabspot/INBOX AND date:3d..now") "Recent inbox" ?3))
+
+  (add-to-list 'mu4e-bookmarks
     '("flag:flagged" "Flagged" ?f))
+
+  (add-to-list 'mu4e-bookmarks
+    '((concat "maildir:/personal/INBOX AND date:today..now"
+              " OR maildir:/prospecthive/INBOX AND date:today..now"
+              " OR maildir:/collabspot/INBOX AND date:today..now") "Today's inbox" ?i))
 #+END_SRC
 
 Define custom headers.
@@ -1332,28 +1341,28 @@ Show unread emails in mode-line (via ~mu4e-alert~ package).
 
 ** Ledger
 #+BEGIN_SRC emacs-lisp
-(defconst *ledger-journal-path* "~/Dropbox/ledger/john.ledger")
+  (defconst *ledger-journal-path* "~/Dropbox/ledger/john.ledger")
 
-(add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
+  (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
 
-(add-hook 'ledger-mode-hook 'goto-address-prog-mode)
+  (add-hook 'ledger-mode-hook 'goto-address-prog-mode)
 
-;; don't override the highlighting of each posted item
-;; in a xact if it is cleared/pending
-(setq ledger-fontify-xact-state-overrides nil)
+  ;; don't override the highlighting of each posted item
+  ;; in a xact if it is cleared/pending
+  (setq ledger-fontify-xact-state-overrides nil)
 
-(defun ledger-open-my-journal ()
-  "Easy way to open my ledger journal"
-  (interactive)
-  (find-file *ledger-journal-path*))
+  (defun my-ledger-frame ()
+    "Easy way to open my ledger journal"
+    (interactive)
+    (nameframe-with-frame "ledger"
+      (persp-switch "ledger")
+      (find-file *ledger-journal-path*)))
+
+  (with-eval-after-load 'flycheck
+    (require 'flycheck-ledger))
+
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-
-(with-eval-after-load 'flycheck
-  (require 'flycheck-ledger))
-
-#+END_SRC
 ** Evil
 
 Evil is [[https://bitbucket.org/lyro/evil/issues/544/disparity-between-local-and-global-mode][meant to be enabled globally]].
