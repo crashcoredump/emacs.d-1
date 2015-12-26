@@ -17,7 +17,10 @@
      ("monthly expenses total" "ledger -f %(ledger-file) reg --period-sort '(-amount)' --real --effective --monthly -p 'this year' Expenses --collapse")
      ("monthly expenses" "ledger -f %(ledger-file) reg --period-sort '(-amount)' --real --effective --monthly -p 'this year' Expenses"))))
  '(org-agenda-files (quote ("~/orgfiles/notes.org" "~/orgfiles/todo.org")))
- '(safe-local-variable-values (quote ((project-venv-name . "prospecthive")))))
+ '(safe-local-variable-values
+   (quote
+    ((project-venv-name . "collabspot-cadence")
+     (project-venv-name . "prospecthive")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

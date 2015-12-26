@@ -52,7 +52,7 @@ Using bleeding edge? I, too, like to live dangerously.
 #+BEGIN_SRC emacs-lisp
 (require 'package)
 (add-to-list 'package-archives
-  '("melpa" . "http://melpa.org/packages/") t)
+  '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 #+END_SRC
 
@@ -162,6 +162,8 @@ Install all packages here using ~install-package~.
       undo-tree
       bind-key
       nameframe
+      avy
+      link-hint
 
       ;;;; Mode-line
       diminish
@@ -1295,7 +1297,10 @@ Enable org-mode support when writing emails, so we can send pretty HTML emails.
   (define-key mu4e-compose-mode-map (kbd "C-c o") 'org~mu4e-mime-switch-headers-or-body)
 #+END_SRC
 
-Use dired to select and attach files.
+Use dired to select and attach files. To attach a file to a message, press ~C-x C-d~ when
+composing a message (this opens dired) then navigate to the file you want to attach. Then
+press ~C-c RET C-a y~ to attach the highlighted file. You can also mark multiple files
+to attach them.
 
 #+BEGIN_SRC emacs-lisp
 (require 'gnus-dired)
@@ -1330,13 +1335,13 @@ Interactive function to switch to a frame dedicated for mu4e.
 Show unread emails in mode-line (via ~mu4e-alert~ package).
 
 #+BEGIN_SRC emacs-lisp
+  (require 'mu4e-alert)
   (setq mu4e-alert-interesting-mail-query
         (concat "(maildir:/personal/INBOX AND date:today..now"
                 " OR maildir:/prospecthive/INBOX AND date:today..now"
                 " OR maildir:/collabspot/INBOX AND date:today..now)"
                 " AND flag:unread"))
-
-  (mu4e-alert-enable-mode-line-display)
+  (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
 #+END_SRC
 
 ** Ledger
