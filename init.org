@@ -1152,7 +1152,7 @@ Set some default variables.
   (require 'smtpmail)
   (require 'starttls)
 
-  (setq mu4e-update-interval 150)
+  (setq mu4e-update-interval 900)
 
   (setq user-mail-address "john2x@gmail.com"
         user-full-name  "John Del Rosario"
@@ -1287,6 +1287,11 @@ Define bookmarks.
     '((concat "maildir:/personal/INBOX AND date:3d..now"
               " OR maildir:/prospecthive/INBOX AND date:3d..now"
               " OR maildir:/collabspot/INBOX AND date:3d..now") "Recent inbox" ?3))
+
+  (add-to-list 'mu4e-bookmarks
+    '((concat "maildir:/personal/INBOX AND date:7d..now"
+              " OR maildir:/prospecthive/INBOX AND date:7d..now"
+              " OR maildir:/collabspot/INBOX AND date:7d..now") "This week's inbox" ?7))
 
   (add-to-list 'mu4e-bookmarks
     '("flag:flagged" "Flagged" ?f))
