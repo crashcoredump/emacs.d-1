@@ -905,6 +905,27 @@ Don't evaluate source blocks when exporting.
 
 Configure publishing of our orgfiles.
 #+BEGIN_SRC emacs-lisp
+  (defun my-website-sitemap-function (project &optional sitemap-filename)
+    "Custom sitemap generator that inserts additional options."
+    (let ((buffer (org-publish-org-sitemap project sitemap-filename)))
+      (with-current-buffer buffer
+        (insert "\n#+OPTIONS: html-preamble:nil")
+        (insert "\n#+SUBTITLE: a.k.a. john2x")
+        (insert (format "\n#+DATE:%s" (format-time-string "%Y-%m-%d")))
+        (save-buffer))))
+
+  (defun my-website-html-postamble (options)
+    (message "%s" (plist-get options ':date))
+    (concat "<hr>"
+            (if (and (plist-get options ':keywords) (not (string= (plist-get options ':keywords) "")))
+                (format "<p>Keywords: %s</p>" (plist-get options ':keywords))
+                "")
+            (format "<p class=\"date\">Modified: %s</p>" (format-time-string "%Y-%m-%d %H:%M:%S"))
+            (format "<p>Copyright (c) %s %s</p>"
+                    (car (split-string (car (plist-get options ':date)) "-")) ;; TODO: get from document options
+                    (car (plist-get options ':author)))
+            (format "<p>%s</p>" (plist-get options ':creator))))
+
   (setq org-publish-project-alist
         `(("orgfiles"
            :base-directory "~/Dropbox/orgfiles"
@@ -915,7 +936,23 @@ Configure publishing of our orgfiles.
            :recursive t
            :auto-sitemap t
            :sitemap-filename "sitemap.org"
-           :sitemap-title "orgfiles")))
+           :sitemap-title "orgfiles")
+          ("website-main"
+           :base-directory "~/Projects/misc/john2x.github.com/"
+           :publishing-directory "~/Dropbox/Apps/updog/john2x/"
+           :recursive t
+           :exclude "level-.*\\|.*\.draft\.org"
+           :publishing-function org-html-publish-to-html
+           :auto-sitemap t
+           :sitemap-filename "index.org"
+           :sitemap-title "John Louis Del Rosario"
+           :sitemap-sort-files "chronologically"
+           :sitemap-function my-website-sitemap-function
+           :html-link-up "/"
+           :html-link-home "/"
+           :html-preamble "<p class=\"date\">Published: %d</p>"
+           :html-postamble my-website-html-postamble)
+          ("website" :components ("website-main"))))
 #+END_SRC
 
 *** Journal
