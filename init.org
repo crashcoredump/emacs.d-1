@@ -860,7 +860,7 @@ Tell Org where our orgfiles are.
 Set custom TODO keywords.
 #+BEGIN_SRC emacs-lisp
 (setq org-todo-keywords
-      '((sequence "TODO" "DOING" "WAITING" "LATER" "|" "DONE" "DELEGATED")))
+      '((sequence "TODO" "DOING" "WAITING" "LATER" "|" "DONE" "DELEGATED" "CANCELED")))
 #+END_SRC
 
 Default notes file for ~org-capture~.
