@@ -901,6 +901,16 @@ Don't evaluate source blocks when exporting.
 (setq org-export-babel-evaluate nil)
 #+END_SRC
 
+Allow quotes to be verbatim[fn:3][fn:4].
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (setcar (nthcdr 2 org-emphasis-regexp-components) " \t\n,'")
+              (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
+              (org-element--set-regexps)
+              (custom-set-variables `(org-emphasis-alist ',org-emphasis-alist))))
+#+END_SRC
+
 *** Publishing
 
 Configure publishing of our orgfiles.
@@ -1512,4 +1522,5 @@ and use Vim's version of ~C-u~ to scroll up half a page.
 
 [fn:1] Copied from http://doc.rix.si/org/fsem.html
 [fn:2] https://github.com/joseph-gay/erc-sasl
-
+[fn:3] http://comments.gmane.org/gmane.emacs.orgmode/82571
+[fn:4] Both answers here http://stackoverflow.com/questions/24169333/how-can-i-emphasize-or-verbatim-quote-a-comma-in-org-mode
