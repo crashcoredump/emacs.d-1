@@ -164,6 +164,7 @@ Install all packages here using ~install-package~.
       nameframe
       avy
       link-hint
+      swiper
 
       ;;;; Mode-line
       diminish
@@ -230,6 +231,7 @@ Install all packages here using ~install-package~.
       evil-matchit
       evil-nerd-commenter
       evil-search-highlight-persist
+      evil-vimish-fold
 
       ;;;; Ledger
       ledger-mode
@@ -428,7 +430,8 @@ highlighted when holding down movement keys.
 (dolist (hook '(prog-mode-hook html-mode-hook))
   (add-hook hook 'highlight-symbol-mode)
   (add-hook hook 'highlight-symbol-nav-mode)
-  (add-hook hook 'hs-minor-mode))
+  (add-hook hook 'vimish-fold-mode))
+  ;(add-hook hook 'hs-minor-mode))
 
 (with-eval-after-load 'highlight-symbol
   (diminish 'highlight-symbol-mode))
@@ -539,11 +542,18 @@ Override ~M-x~ to use smex. Smex basically sorts commands by most-recently used.
 ** Swiper, Ivy
 
 #+BEGIN_SRC emacs-lisp
-(ivy-mode 1)
 (setq ivy-use-virtual-buffers t)
 (global-set-key "\C-s" 'swiper)
 (global-set-key (kbd "C-c C-r") 'ivy-resume)
 (global-set-key (kbd "<f6>") 'ivy-resume)
+#+END_SRC
+
+Emulate Evil's ~*~ command with Swiper.
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-M-s")
+                  (lambda ()
+                    (interactive)
+                    (swiper (word-at-point))))
 #+END_SRC
 
 ** Window and frame management
@@ -564,6 +574,13 @@ Also allow using numbers to switch window focus.
 (global-set-key (kbd "M-g j")       'buf-move-down)
 
 (window-number-meta-mode 1)
+#+END_SRC
+
+Cycle through a window's buffer history using ~C-M-,~ (backward) and ~C-M-.~ (forward).
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-M-,") 'switch-to-prev-buffer)
+  (global-set-key (kbd "C-M-.") 'switch-to-next-buffer)
 #+END_SRC
 
 ** Interactive searching
@@ -925,7 +942,6 @@ Configure publishing of our orgfiles.
         (save-buffer))))
 
   (defun my-website-html-postamble (options)
-    (message "%s" (plist-get options ':date))
     (concat "<hr>"
             (if (and (plist-get options ':keywords) (not (string= (plist-get options ':keywords) "")))
                 (format "<p>Keywords: %s</p>" (plist-get options ':keywords))
@@ -988,6 +1004,12 @@ Show git status indicators in the fringe.
 (global-set-key (kbd "M-g M-n") 'git-gutter:next-hunk)
 #+END_SRC
 
+
+Package for yanking/killing links to Git repository files.
+#+BEGIN_SRC emacs-lisp
+(require 'repolink)
+#+END_SRC
+
 *** Magit
 
 #+BEGIN_SRC emacs-lisp
@@ -1010,6 +1032,7 @@ Make the Magit buffer take the entire frame.
 (with-eval-after-load 'magit
   (fullframe magit-status magit-mode-quit-window))
 #+END_SRC
+
 
 ** Projectile
 #+BEGIN_SRC emacs-lisp
@@ -1491,7 +1514,9 @@ Enable Evil plugins.
 (global-evil-search-highlight-persist t)
 (evilnc-default-hotkeys)
 (with-eval-after-load 'evil
-  (require 'evil-anzu))
+  (require 'evil-anzu)
+  (require 'evil-vimish-fold))
+(evil-vimish-fold-mode 1)
 #+END_SRC
 
 Use ~SPACE~ for scrolling.
