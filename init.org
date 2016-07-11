@@ -1432,6 +1432,7 @@ Show unread emails in mode-line (via ~mu4e-alert~ package).
 ** Ledger
 #+BEGIN_SRC emacs-lisp
   (defconst *ledger-journal-path* "~/Dropbox/ledger/john.ledger")
+  (defconst *ledger-docs-dir* "~/Dropbox/ledger/")
 
   (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
 
@@ -1446,7 +1447,13 @@ Show unread emails in mode-line (via ~mu4e-alert~ package).
     (interactive)
     (nameframe-with-frame "ledger"
       (persp-switch "ledger")
-      (find-file *ledger-journal-path*)))
+      (find-file *ledger-journal-path*)
+      (split-window-right)
+      (find-file-other-window (concat *ledger-docs-dir* "Accounts.ledger"))
+      (split-window-below)
+      (window-number-select 1)
+      (ledger-report "bal" nil)
+      (toggle-frame-maximized)))
 
   (with-eval-after-load 'flycheck
     (require 'flycheck-ledger))
