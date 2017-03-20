@@ -273,6 +273,8 @@ Install all packages here using ~install-package~.
       purescript-mode
       elm-mode
       mu4e-alert
+      restclient
+      company-restclient
 
       ;;;;;; Org
       htmlize
