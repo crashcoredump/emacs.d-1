@@ -1398,6 +1398,13 @@ Improve rendering of HTML only emails.
   (setq mu4e-html2text-command 'mu4e-shr2text)
 #+END_SRC
 
+Some emails are unreadable, even with the ~html2text~ command. We resort to viewing the email
+in the browser instead.
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'mu4e-view-actions
+    '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+#+END_SRC
+
 Enable org-mode support when writing emails, so we can send pretty HTML emails.
 
 #+BEGIN_SRC emacs-lisp
