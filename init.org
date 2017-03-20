@@ -1062,10 +1062,11 @@ Not actually projectile, but still project management related.
 
 ** ERC
 
-Set some default values. We don't want to auto-reconnect since it could flood the channel and get us temporarily banned.
+Set some default values. We don't want to auto-reconnect too much since it could flood the channel and get us temporarily banned.
 #+BEGIN_SRC emacs-lisp
 (setq erc-nick "john2x"
-      erc-server-auto-reconnect nil)
+      erc-server-auto-reconnect t
+      erc-server-reconnect-timeout 15)
 #+END_SRC
 
 Change ~header-line~ face when disconnected.
@@ -1093,6 +1094,12 @@ Interactive function to create a frame dedicated to ERC and automatically connec
   (nameframe-with-frame "ERC"
     (persp-switch "freenode.net")
     (erc :server "irc.freenode.net" :port "6667" :nick "john2x")))
+#+END_SRC
+
+When reconnect attempts fail, have a convenient shortcut to reconnect manually.
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'erc
+    (define-key erc-mode-map (kbd "C-c C-r") (lambda () (interactive) (erc-server-reconnect))))
 #+END_SRC
 
 When using a VPN, freenode.net (and probably other servers as well) requires us to authenticate with SASL.
@@ -1136,6 +1143,20 @@ CAP request for SASL. Until ~erc-sasl~ gets merged into the main ERC package, we
 Set the prompt to use the channel name.
 #+BEGIN_SRC emacs-lisp
 (setq erc-prompt  (lambda () (concat (buffer-name) "> ")))
+#+END_SRC
+
+
+Add a ~/FLUSH~ command to flush the ERC buffer of contents.
+
+#+BEGIN_SRC emacs-lisp
+  (defun erc-cmd-FLUSH (&rest ignore)
+    "Erase the current buffer."
+    (let ((inhibit-read-only t))
+      (buffer-disable-undo)
+      (erase-buffer)
+      (buffer-enable-undo)
+      (message "Flushed contents of channel")
+      t))
 #+END_SRC
 
 *** Modules
