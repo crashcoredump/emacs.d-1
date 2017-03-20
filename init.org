@@ -773,11 +773,6 @@ Set some variables in CIDER REPL and some hooks.
           (lambda () (setq show-trailing-whitespace nil)))
 #+END_SRC
 
-Show eldoc for Clojure.
-#+BEGIN_SRC emacs-lisp
-(add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-#+END_SRC
-
 Use clojure-mode for Clojurescript.
 #+BEGIN_SRC emacs-lisp
 (add-auto-mode 'clojure-mode "\\.cljs\\'")
