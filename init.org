@@ -1589,6 +1589,11 @@ and use Vim's version of ~C-u~ to scroll up half a page.
   (define-key evil-motion-state-map (kbd "C-u") 'evil-scroll-up))
 #+END_SRC
 
+Fix visual select bug on macOS.
+#+BEGIN_SRC emacs-lisp
+(fset 'evil-visual-update-x-selection 'ignore)
+#+END_SRC
+
 * Footnotes
 
 [fn:1] Copied from http://doc.rix.si/org/fsem.html
