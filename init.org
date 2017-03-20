@@ -457,23 +457,28 @@ create the new one."
 
 *** Font
 #+BEGIN_SRC emacs-lisp
-(defvar Input-font '(:family "Input" :size 12))
-(defvar PragmataPro-font '(:family "Essential PragmataPro" :size 12))
+  (defvar Input-font '(:family "Input" :size 10))
+  (defvar PragmataPro-font '(:family "Essential PragmataPro" :size 12))
+  (defvar Go-font '(:family "Go Mono" :size 12))
+  (defvar Terminus-font '(:family "Terminus (TTF)" :size 12))
+  (defvar DOS-font '(:family "Perfect DOS VGA 437" :size 13))
 
-(set-frame-font (apply 'font-spec PragmataPro-font) nil t)
+  (set-frame-font (apply 'font-spec PragmataPro-font) nil t)
 
-(when *is-a-mac*
-  (set-fontset-font
-     t 'symbol
-     (font-spec :family "Apple Color Emoji") nil 'prepend))
+  (when *is-a-mac*
+    (set-fontset-font
+       t 'symbol
+       (font-spec :family "Apple Color Emoji") nil 'prepend))
 #+END_SRC
 
 Easily switch fonts.
 #+BEGIN_SRC emacs-lisp
   (defun my-switch-font (font)
-    (interactive "sSwitch font (1. Input 2. PragmataPro): ")
-    (cond ((string= font "1") (set-frame-font (apply 'font-spec Input-font) nil t))
-          ((string= font "2") (set-frame-font (apply 'font-spec PragmataPro-font) nil t))
+    (interactive "sSwitch font (1. PragmataPro 2. Go Mono 3. Terminus 4. DOS): ")
+    (cond ((string= font "1") (set-frame-font (apply 'font-spec PragmataPro-font) nil t))
+          ((string= font "2") (set-frame-font (apply 'font-spec Go-font) nil t))
+          ((string= font "3") (set-frame-font (apply 'font-spec Terminus-font) nil t))
+          ((string= font "4") (set-frame-font (apply 'font-spec DOS-font) nil t))
           (t (message "Invalid option. Please choose 1 or 2."))))
 #+END_SRC
 
