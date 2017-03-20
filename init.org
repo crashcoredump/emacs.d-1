@@ -1012,7 +1012,7 @@ Show git status indicators in the fringe.
 
 Package for yanking/killing links to Git repository files.
 #+BEGIN_SRC emacs-lisp
-(require 'repolink)
+(require 'browse-at-remote)
 #+END_SRC
 
 *** Magit
