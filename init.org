@@ -405,7 +405,7 @@ Configure UI stuff like:
 ;; show column number in mode-line
 (column-number-mode)
 
-(setq inhibit-splash-screen t)
+(setq inhibit-splash-screen nil)
 
 (setq-default indicate-empty-lines t)
 
