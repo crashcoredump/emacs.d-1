@@ -1148,6 +1148,30 @@ Add a ~/FLUSH~ command to flush the ERC buffer of contents.
       t))
 #+END_SRC
 
+Set the fill prefix to a constant value, instead of basing it off the username.
+#+BEGIN_SRC emacs-lisp
+(setq erc-fill-prefix "  ↳ ")
+#+END_SRC
+
+Channel tracking is for keeping track of activity in channels which are currently not visible on some frame/window.
+Ignore tracking the following types of messages.
+#+BEGIN_SRC emacs-lisp
+(setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT"))
+#+END_SRC
+
+Disable ~nlinum-mode~ for ERC buffers.
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'erc-mode-hook (lambda () (nlinum-mode -1)))
+#+END_SRC
+
+Send messages with ~C-RET~ instead of just ~RET~ to avoid accidentally pasting text into
+an ERC buffer and pressing Enter.
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'erc
+    (define-key erc-mode-map (kbd "<C-return>") 'erc-send-current-line)
+    (define-key erc-mode-map (kbd "RET") '(lambda () (interactive) (message "Send with C-return"))))
+#+END_SRC
+
 *** Modules
 
 Highlight nicknames so they're easier to spot.
@@ -1173,6 +1197,7 @@ Render smiley icons, because why not ~:-)~?
 (add-to-list 'erc-modules 'smiley)
 #+END_SRC
 
+Finally, reload ERC's modules.
 #+BEGIN_SRC emacs-lisp
 (erc-update-modules)
 #+END_SRC
