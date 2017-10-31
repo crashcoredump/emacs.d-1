@@ -169,6 +169,7 @@ Install all packages here using ~install-package~.
       ;;;; Mode-line
       diminish
       smart-mode-line
+      rich-minority
 
       ;;;; UI
       indent-guide
@@ -179,7 +180,7 @@ Install all packages here using ~install-package~.
 
       ;;;; ido, ~M-x~
       flx-ido
-      ido-ubiquitous
+      ido-completing-read+
       smex
       idomenu
       ido-vertical-mode
@@ -243,6 +244,7 @@ Install all packages here using ~install-package~.
       anaconda-mode
       company-anaconda
       nose
+      ein
 
       ;;;;;; YAML
       yaml-mode
@@ -275,10 +277,13 @@ Install all packages here using ~install-package~.
       mu4e-alert
       restclient
       company-restclient
+      origami
 
       ;;;;;; Org
       htmlize
-      org-journal)
+      org-journal
+      ob-ipython
+      toc-org)
     "My packages!")
 
   ;; loop over my-packages and install them
@@ -427,9 +432,6 @@ highlighted when holding down movement keys.
   (add-hook hook 'vimish-fold-mode))
   ;(add-hook hook 'hs-minor-mode))
 
-(with-eval-after-load 'highlight-symbol
-  (diminish 'highlight-symbol-mode))
-
 ;; http://emacs.stackexchange.com/questions/931
 (defun highlight-symbol-mode-post-command ()
   "After a command, change the temporary highlighting.
@@ -454,8 +456,7 @@ create the new one."
   (defvar Input-font '(:family "Input" :size 10))
   (defvar PragmataPro-font '(:family "Essential PragmataPro" :size 12))
   (defvar Go-font '(:family "Go Mono" :size 12))
-  (defvar Terminus-font '(:family "Terminus (TTF)" :size 12))
-  (defvar DOS-font '(:family "Perfect DOS VGA 437" :size 13))
+  (defvar Terminus-font '(:family "Terminus (TTF)" :size 14))
 
   (set-frame-font (apply 'font-spec PragmataPro-font) nil t)
 
@@ -465,15 +466,16 @@ create the new one."
        (font-spec :family "Apple Color Emoji") nil 'prepend))
 #+END_SRC
 
+#+RESULTS:
+
 Easily switch fonts.
 #+BEGIN_SRC emacs-lisp
   (defun my-switch-font (font)
-    (interactive "sSwitch font (1. PragmataPro 2. Go Mono 3. Terminus 4. DOS): ")
+    (interactive "sSwitch font (1. PragmataPro 2. Go Mono 3. Terminus): ")
     (cond ((string= font "1") (set-frame-font (apply 'font-spec PragmataPro-font) nil t))
           ((string= font "2") (set-frame-font (apply 'font-spec Go-font) nil t))
           ((string= font "3") (set-frame-font (apply 'font-spec Terminus-font) nil t))
-          ((string= font "4") (set-frame-font (apply 'font-spec DOS-font) nil t))
-          (t (message "Invalid option. Please choose 1 or 2."))))
+          (t (message "Invalid option. Please choose 1 - 3."))))
 #+END_SRC
 
 *** Theme
@@ -485,9 +487,20 @@ Theme of the month.
 #+END_SRC
 
 *** Mode line
+
 #+BEGIN_SRC emacs-lisp
 (which-function-mode)
 #+END_SRC
+
+Hide some minor modes from the mode line.
+#+BEGIN_SRC emacs-lisp
+  (rich-minority-mode)
+
+  (setq rm-blacklist '(" hl-p" " hl-s" " $" " hs" " zf" " company"
+                       " GG" " FlyC" " Undo-Tree" " FlyC-" " Isearch"
+                       " Anaconda" " Anzu"))
+#+END_SRC
+
 
 ** Ag
 
@@ -587,8 +600,6 @@ Cycle through a window's buffer history using ~C-M-,~ (backward) and ~C-M-.~ (fo
 #+BEGIN_SRC emacs-lisp
 (global-anzu-mode t)
 
-(diminish 'anzu-mode)
-
 (global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
 (global-set-key [remap query-replace] 'anzu-query-replace)
 
@@ -614,6 +625,12 @@ Enable ~company-mode~ globally.
 
 ** Language Specific
 *** Python
+
+Use Django style docstring format when filling docstrings.
+#+BEGIN_SRC emacs-lisp
+(setq python-fill-docstring-style 'django)
+#+END_SRC
+
 **** Anaconda
 
 Use Anaconda with ~company~ for code completion.
@@ -650,6 +667,20 @@ set for the project's virtualenv, activate that virtualenv.
 Show active virtualenv in mode line.
 #+BEGIN_SRC emacs-lisp
 (setq-default mode-line-format (cons '(:exec venv-current-name) mode-line-format))
+#+END_SRC
+
+**** EIN
+The Emacs IPython Notebook package.
+
+Interactive function to create a frame dedicated for EIN usage.
+Make sure to have a Jupyter server up and running first.
+#+BEGIN_SRC emacs-lisp
+  (defun my-ein-frame ()
+    "Open a frame dedicated for EIN."
+    (interactive)
+    (nameframe-with-frame "EIN"
+      (persp-switch "ein")
+      (call-interactively 'ein:notebooklist-login)))
 #+END_SRC
 
 *** YAML
@@ -793,6 +824,10 @@ Use clojure-mode for Clojurescript.
 
 ** Code Folding (HideShow)
 
+#+BEGIN_SRC emacs-lisp
+(setq origami-fold-replacement "...")
+#+END_SRC
+
 Show the contents of the first 40 characters of the folded text and the number of lines folded.
 #+BEGIN_SRC emacs-lisp
   (setq hs-set-up-overlay
@@ -922,7 +957,66 @@ Allow quotes to be verbatim[fn:3][fn:4].
               (custom-set-variables `(org-emphasis-alist ',org-emphasis-alist))))
 #+END_SRC
 
+Enable the ~toc-org~ package, for generating and inserting table of
+contents directly in the Org document itself (e.g. useful for Github
+README.org files)
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook 'toc-org-enable)
+#+END_SRC
+
 *** Publishing
+
+Allow exporting and publishing to ODT.
+#+BEGIN_SRC emacs-lisp
+  (require 'ox-odt)
+
+  ;;;###autoload
+    (defun org-odt-publish-to-odt (plist filename pub-dir)
+      "Publish an org file to ODT.
+
+    FILENAME is the filename of the Org file to be published.  PLIST
+    is the property list of the given project.  PUB-DIR is the publishing
+    directory.
+
+    Return output file name."
+      (unless (or (not pub-dir) (file-exists-p pub-dir)) (make-directory pub-dir t))
+      ;; Check if a buffer visiting FILENAME is already open.
+      (let* ((org-inhibit-startup t)
+             (visiting (find-buffer-visiting filename))
+             (work-buffer (or visiting (find-file-noselect filename))))
+        (unwind-protect
+        (with-current-buffer work-buffer
+          (let ((outfile (org-export-output-file-name ".odt" nil pub-dir)))
+            (org-odt--export-wrap
+             outfile
+             (let* ((org-odt-embedded-images-count 0)
+                    (org-odt-embedded-formulas-count 0)
+                    (org-odt-object-counters nil)
+                    (hfy-user-sheet-assoc nil))
+               (let ((output (org-export-as 'odt nil nil nil
+                                            (org-combine-plists
+                                             plist
+                                             `(:crossrefs
+                                               ,(org-publish-cache-get-file-property
+                                                 (expand-file-name filename) :crossrefs nil t)
+                                               :filter-final-output
+                                               (org-publish--store-crossrefs
+                                                org-publish-collect-index
+                                                ,@(plist-get plist :filter-final-output))))))
+                     (out-buf (progn (require 'nxml-mode)
+                                     (let ((nxml-auto-insert-xml-declaration-flag nil))
+                                       (find-file-noselect
+                                        (concat org-odt-zip-dir "content.xml") t)))))
+                 (with-current-buffer out-buf (erase-buffer) (insert output))))))))
+        (unless visiting (kill-buffer work-buffer))))
+#+END_SRC
+
+Fix the path to the ~soffice~ program on macOS.
+#+BEGIN_SRC emacs-lisp
+  (setq org-odt-convert-processes '(("LibreOffice"
+                                     "/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to %f%x --outdir %d %i")))
+#+END_SRC
+
 
 Configure publishing of our orgfiles.
 #+BEGIN_SRC emacs-lisp
@@ -982,6 +1076,22 @@ Experiment with ~org-journal~ for a personal diary of sorts.
 (setq org-journal-dir (concat org-directory "/journal/"))
 #+END_SRC
 
+*** Org Babel
+
+Load additional languages.
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((ipython . t)))
+#+END_SRC
+
+Set additional templates.
+#+BEGIN_SRC emacs-lisp
+  (setq org-structure-template-alist (append org-structure-template-alist
+                                             '(("sel" "#+BEGIN_SRC emacs-lisp?\n\n#+END_SRC")
+                                               ("sip" "#+BEGIN_SRC ipython :session?\n\n#+END_SRC"))))
+#+END_SRC
+
 ** Git
 
 Show git status indicators in the fringe.
@@ -1032,6 +1142,7 @@ Make the Magit buffer take the entire frame.
 #+BEGIN_SRC emacs-lisp
   (projectile-global-mode)
   (persp-mode)
+  (diminish 'projectile-mode)
 
   (setq projectile-switch-project-action 'projectile-dired
         projectile-completion-system 'ido
@@ -1131,7 +1242,7 @@ CAP request for SASL. Until ~erc-sasl~ gets merged into the main ERC package, we
 
 Set the prompt to use the channel name.
 #+BEGIN_SRC emacs-lisp
-(setq erc-prompt  (lambda () (concat (buffer-name) "> ")))
+(setq erc-prompt  (lambda () (concat (buffer-name) " > ")))
 #+END_SRC
 
 
@@ -1215,7 +1326,7 @@ Set some default variables.
   (require 'smtpmail)
   (require 'starttls)
 
-  (setq mu4e-update-interval 900)
+  (setq mu4e-update-interval nil)
 
   (setq user-mail-address "john2x@gmail.com"
         user-full-name  "John Del Rosario"
@@ -1259,7 +1370,7 @@ Define multiple email accounts so we can switch between them.
 #+BEGIN_SRC emacs-lisp
   (setq mu4e-user-mail-address-list '("john2x@gmail.com"
                                       "john@collabspot.com"
-                                      "john@prospecthive.com"))
+                                      "john@newlogic.io"))
 
   (defvar my-mu4e-account-alist
     '(("personal"
@@ -1282,12 +1393,12 @@ Define multiple email accounts so we can switch between them.
        (smtpmail-smtp-server "smtp.gmail.com")
        (smtpmail-stream-type starttls)
        (smtpmail-smtp-service 587))
-      ("prospecthive"
-       (mu4e-sent-folder "/prospecthive/[Gmail]/Sent Mail")
-       (mu4e-drafts-folder "/prospecthive/drafts")
-       (mu4e-compose-signature "prospecthive.com\nSent from GNU Emacs")
-       (user-mail-address "john@prospecthive.com")
-       (smtpmail-smtp-user "john@prospecthive.com")
+      ("newlogic"
+       (mu4e-sent-folder "/newlogic/[Gmail]/Sent Mail")
+       (mu4e-drafts-folder "/newlogic/drafts")
+       (mu4e-compose-signature "newlogic.io\nSent from GNU Emacs")
+       (user-mail-address "john@newlogic.io")
+       (smtpmail-smtp-user "john@newlogic.io")
        (smtpmail-default-smtp-server "smtp.gmail.com")
        (smtpmail-smtp-server "smtp.gmail.com")
        (smtpmail-stream-type starttls)
@@ -1330,7 +1441,7 @@ Define some shortcuts to common folders.
 (setq mu4e-maildir-shortcuts
     '(("/personal/INBOX"               . ?j)
       ("/collabspot/INBOX"             . ?c)
-      ("/prospecthive/INBOX"           . ?p)))
+      ("/newlogic/INBOX"           . ?n)))
 #+END_SRC
 
 Define bookmarks.
@@ -1338,22 +1449,22 @@ Define bookmarks.
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'mu4e-bookmarks
     '((concat "maildir:/personal/[Gmail]/\"Sent Mail\" AND date:3d..now"
-              " OR maildir:/prospecthive/[Gmail]/\"Sent Mail\" AND date:3d..now"
+              " OR maildir:/newlogic/[Gmail]/\"Sent Mail\" AND date:3d..now"
               " OR maildir:/collabspot/[Gmail]/\"Sent Mail\" AND date:3d..now") "Recent sent mail" ?s))
 
   (add-to-list 'mu4e-bookmarks
     '((concat "maildir:/personal/[Gmail]/\"All Mail\" AND date:3d..now"
-              " OR maildir:/prospecthive/[Gmail]/\"All Mail\" AND date:3d..now"
+              " OR maildir:/newlogic/[Gmail]/\"All Mail\" AND date:3d..now"
               " OR maildir:/collabspot/[Gmail]/\"All Mail\" AND date:3d..now") "Recent all mail" ?a))
 
   (add-to-list 'mu4e-bookmarks
     '((concat "maildir:/personal/INBOX AND date:3d..now"
-              " OR maildir:/prospecthive/INBOX AND date:3d..now"
+              " OR maildir:/newlogic/INBOX AND date:3d..now"
               " OR maildir:/collabspot/INBOX AND date:3d..now") "Recent inbox" ?3))
 
   (add-to-list 'mu4e-bookmarks
     '((concat "maildir:/personal/INBOX AND date:7d..now"
-              " OR maildir:/prospecthive/INBOX AND date:7d..now"
+              " OR maildir:/newlogic/INBOX AND date:7d..now"
               " OR maildir:/collabspot/INBOX AND date:7d..now") "This week's inbox" ?7))
 
   (add-to-list 'mu4e-bookmarks
@@ -1361,7 +1472,7 @@ Define bookmarks.
 
   (add-to-list 'mu4e-bookmarks
     '((concat "maildir:/personal/INBOX AND date:today..now"
-              " OR maildir:/prospecthive/INBOX AND date:today..now"
+              " OR maildir:/newlogic/INBOX AND date:today..now"
               " OR maildir:/collabspot/INBOX AND date:today..now") "Today's inbox" ?i))
 #+END_SRC
 
@@ -1392,7 +1503,7 @@ Define custom headers.
                                                              begins))
                                                   (t nil))))
                        (cond ((starts-with maildir "/collabspot") "collabspot")
-                             ((starts-with maildir "/prospecthive") "prospecthive")
+                             ((starts-with maildir "/newlogic") "newlogic")
                              (t "personal"))))))))
 
   (setq mu4e-headers-fields '((:human-date . 12)
@@ -1470,10 +1581,19 @@ Show unread emails in mode-line (via ~mu4e-alert~ package).
   (require 'mu4e-alert)
   (setq mu4e-alert-interesting-mail-query
         (concat "(maildir:/personal/INBOX AND date:today..now"
-                " OR maildir:/prospecthive/INBOX AND date:today..now"
+                " OR maildir:/newlogic/INBOX AND date:today..now"
                 " OR maildir:/collabspot/INBOX AND date:today..now)"
                 " AND flag:unread"))
   (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
+#+END_SRC
+
+Disable line numbers in mu4e buffers.
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'mu4e-main-mode-hook (lambda () (nlinum-mode -1)))
+  (add-hook 'mu4e-headers-mode-hook (lambda () (nlinum-mode -1)))
+  (add-hook 'mu4e-view-mode-hook (lambda () (nlinum-mode -1)))
+  (add-hook 'mu4e-compose-mode-hook (lambda () (nlinum-mode -1)))
+  (add-hook 'mu4e-org-mode-hook (lambda () (nlinum-mode -1)))
 #+END_SRC
 
 ** Ledger
