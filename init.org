@@ -1192,7 +1192,6 @@ Interactive function to create a frame dedicated to ERC and automatically connec
   "Switch or create to a frame called 'ERC' and connect to IRC"
   (interactive)
   (nameframe-with-frame "ERC"
-    (persp-switch "freenode.net")
     (erc :server "irc.freenode.net" :port "6667" :nick "john2x")))
 #+END_SRC
 
@@ -1200,6 +1199,11 @@ When reconnect attempts fail, have a convenient shortcut to reconnect manually.
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'erc
     (define-key erc-mode-map (kbd "C-c C-r") (lambda () (interactive) (erc-server-reconnect))))
+#+END_SRC
+
+When reconnecting, don't bring any channels up into the current buffer.
+#+BEGIN_SRC emacs-lisp
+(setq erc-join-buffer 'bury)
 #+END_SRC
 
 When using a VPN, freenode.net (and probably other servers as well) requires us to authenticate with SASL.
@@ -1261,7 +1265,7 @@ Add a ~/FLUSH~ command to flush the ERC buffer of contents.
 
 Set the fill prefix to a constant value, instead of basing it off the username.
 #+BEGIN_SRC emacs-lisp
-(setq erc-fill-prefix "  ↳ ")
+(setq erc-fill-prefix "        ↳ ")
 #+END_SRC
 
 Channel tracking is for keeping track of activity in channels which are currently not visible on some frame/window.
@@ -1300,7 +1304,7 @@ Save logs when leaving a channel.
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'erc-modules 'log)
 (setq erc-save-buffer-on-part t)
-(setq erc-log-channels-directory "~/.erc/logs/")
+(setq erc-log-channels-directory "~/.erc/logs")
 #+END_SRC
 
 Render smiley icons, because why not ~:-)~?
