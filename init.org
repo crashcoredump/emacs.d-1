@@ -160,6 +160,12 @@ Load keychain environment variables, so we don't have to keep on typing our SSH 
   (keychain-refresh-environment))
 #+END_SRC
 
+Make the kill ring work with X selections.
+#+BEGIN_SRC emacs-lisp
+  (setq select-enable-clipboard t
+        select-enable-primary t)
+#+END_SRC
+
 ** TODO Windows
 
 Try using this config on a Windows (7+) VM.
