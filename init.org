@@ -178,6 +178,7 @@ Install all packages here using ~install-package~.
       avy
       link-hint
       swiper
+      keychain-environment
 
       ;;;; Mode-line
       diminish
@@ -213,7 +214,7 @@ Install all packages here using ~install-package~.
       flycheck
 
       ;;;; Dired
-      dired+
+      ;; dired+
 
       ;;;; Ack & Ag
       ag
