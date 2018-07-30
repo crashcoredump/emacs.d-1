@@ -731,6 +731,7 @@ Make sure to have a Jupyter server up and running first.
   (defun my-ein-frame ()
     "Open a frame dedicated for EIN."
     (interactive)
+    ;; TODO: check if jupyter server is up and running before launching the frame
     (nameframe-with-frame "EIN"
       (persp-switch "ein")
       (call-interactively 'ein:notebooklist-login)))
@@ -1803,6 +1804,14 @@ and use Vim's version of ~C-u~ to scroll up half a page.
 Fix visual select bug on macOS.
 #+BEGIN_SRC emacs-lisp
 (fset 'evil-visual-update-x-selection 'ignore)
+#+END_SRC
+
+~evil-nerd-commenter~ defines a global key binding for ~C-c p~, which
+we do not use. Remove this binding and rebind the ~C-c p p~ binding
+for ~projectile-swith-project~.
+#+BEGIN_SRC emacs-lisp
+  (global-unset-key (kbd "C-c p"))
+  (global-set-key (kbd "C-c p p") 'projectile-switch-project)
 #+END_SRC
 
 * Footnotes
