@@ -1277,7 +1277,7 @@ When reconnect attempts fail, have a convenient shortcut to reconnect manually.
 
 When reconnecting, don't bring any channels up into the current buffer.
 #+BEGIN_SRC emacs-lisp
-(setq erc-join-buffer 'bury)
+(setq erc-join-buffer 'window-noselect)
 #+END_SRC
 
 When using a VPN, freenode.net (and probably other servers as well) requires us to authenticate with SASL.
