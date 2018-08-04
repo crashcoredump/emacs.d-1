@@ -193,7 +193,6 @@ Install all packages here using ~install-package~.
       exec-path-from-shell
       undo-tree
       bind-key
-      nameframe
       avy
       link-hint
       swiper
@@ -219,7 +218,7 @@ Install all packages here using ~install-package~.
 
       ;;;; Window and frame management
       buffer-move
-      window-number
+      ;window-number
       fullframe
 
       ;;;; Interactive Search
@@ -251,11 +250,9 @@ Install all packages here using ~install-package~.
       projectile
       flx
       project-explorer
-      nameframe-projectile
 
-      ;;;; Perspective
-      perspective
-      nameframe-perspective
+      ;;;; frame-purpose
+      frame-purpose
 
       ;;;; Evil (Vim)
       evil
@@ -667,6 +664,34 @@ Add backends.
 #+END_SRC
 
 ** Language Specific
+*** Language Server Protocol
+
+Define LSP client for Python. This defines a ~lsp-python-enable~
+function which we use to hook into ~python-mode~.
+#+BEGIN_SRC emacs-lisp
+  (require 'lsp-mode)
+
+  (lsp-define-stdio-client lsp-python "python"
+                           #'projectile-project-root
+                           '("pyls"))
+
+  (add-hook 'python-mode-hook 'lsp-python-enable)
+  (add-to-list 'company-backends 'company-lsp)
+#+END_SRC
+
+Enable ~lsp-imenu~ integration.
+#+BEGIN_SRC emacs-lisp
+  (require 'lsp-imenu)
+  (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
+#+END_SRC
+
+LSP extras.
+#+BEGIN_SRC emacs-lisp
+  (setq lsp-ui-sideline-ignore-duplicate t)
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+#+END_SRC
+
+
 *** Python
 
 Use Django style docstring format when filling docstrings.
@@ -679,9 +704,9 @@ Use Django style docstring format when filling docstrings.
 Use Anaconda with ~company~ for code completion.
 
 #+BEGIN_SRC emacs-lisp
-(require 'company-anaconda)
-(add-to-list 'company-backends 'company-anaconda)
-(add-hook 'python-mode-hook 'anaconda-mode)
+; (require 'company-anaconda)
+; (add-to-list 'company-backends 'company-anaconda)
+; (add-hook 'python-mode-hook 'anaconda-mode)
 #+END_SRC
 
 **** Virtual Environments
@@ -728,13 +753,13 @@ The Emacs IPython Notebook package.
 Interactive function to create a frame dedicated for EIN usage.
 Make sure to have a Jupyter server up and running first.
 #+BEGIN_SRC emacs-lisp
-  (defun my-ein-frame ()
-    "Open a frame dedicated for EIN."
-    (interactive)
-    ;; TODO: check if jupyter server is up and running before launching the frame
-    (nameframe-with-frame "EIN"
-      (persp-switch "ein")
-      (call-interactively 'ein:notebooklist-login)))
+  ;;(defun my-ein-frame ()
+  ;;  "Open a frame dedicated for EIN."
+  ;;  (interactive)
+  ;;  ;; TODO: check if jupyter server is up and running before launching the frame
+  ;;  (nameframe-with-frame "EIN"
+  ;;    (persp-switch "ein")
+  ;;    (call-interactively 'ein:notebooklist-login)))
 #+END_SRC
 
 *** YAML
@@ -1192,46 +1217,46 @@ Make the Magit buffer take the entire frame.
 #+END_SRC
 
 
-** Projectile
+** Projectile and frame workflow
+
+Configure Projectile for project management and navigation.
 #+BEGIN_SRC emacs-lisp
   (projectile-global-mode)
-  (persp-mode)
   (diminish 'projectile-mode)
 
-  (setq projectile-switch-project-action 'projectile-dired
-        projectile-completion-system 'ido
+  (setq projectile-completion-system 'ido
         projectile-enable-caching t)
 
   (global-set-key (kbd "C-x p") 'projectile-find-file)
-
-  (nameframe-projectile-mode t)
-  (nameframe-perspective-mode t)
-  (global-set-key (kbd "M-P") 'nameframe-switch-frame)
 #+END_SRC
 
-Not actually projectile, but still project management related.
+Configure =frame-workflow= and =frame-purpose= to have dedicated
+frames for each Projectile project.
+#+BEGIN_SRC emacs-lisp
+  (require 'frame-workflow)
+  (frame-workflow-mode 1)
+
+  (setq projectile-switch-project-action #'frame-workflow-switch-directory-frame)
+
+  (global-set-key (kbd "M-P") 'frame-workflow-switch-frame)
+#+END_SRC
+
+When creating a new Projectile frame, we want the frame's name to be
+set to the project name.
+#+BEGIN_SRC emacs-lisp
+  (defun frame-workflow-set-projectile-frame-name (frame-action)
+    "Set the frame's name and call FRAME-ACTION."
+    (set-frame-parameter nil 'name (projectile-project-name))
+    (funcall frame-action))
+
+  (setq frame-workflow-directory-frame-action
+        (lambda ()
+          (frame-workflow-set-projectile-frame-name #'projectile-dired)))
+#+END_SRC
+
+Not Projectile, but still project management related.
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "<f3>") 'project-explorer-toggle)
-#+END_SRC
-
-Patch to fix an issue with discovering projects. See https://github.com/bbatsov/projectile/issues/1165.
-#+BEGIN_SRC emacs-lisp
-  (defun projectile-discover-projects-in-directory (directory)
-    "Discover any projects in DIRECTORY and add them to the projectile cache.
-  This function is not recursive and only adds projects with roots
-  at the top level of DIRECTORY."
-    (interactive
-     (list (read-directory-name "Starting directory: ")))
-    (let ((subdirs (directory-files directory t)))
-      (mapcar
-       (lambda (dir)
-         (when (and (file-directory-p dir)
-                    (not (member (file-name-nondirectory dir) '(".." "."))))
-           (let ((default-directory dir)
-                 (projectile-cached-project-root dir))
-             (when (projectile-project-p)
-               (projectile-add-known-project (projectile-project-root))))))
-       subdirs)))
 #+END_SRC
 
 ** ERC
@@ -1262,11 +1287,12 @@ Interactive function to create a frame dedicated to ERC and automatically connec
 (We don't join channels automatically as it could take too long.)
 
 #+BEGIN_SRC emacs-lisp
-(defun my-erc-frame ()
-  "Switch or create to a frame called 'ERC' and connect to IRC"
-  (interactive)
-  (nameframe-with-frame "ERC"
-    (erc :server "irc.freenode.net" :port "6667" :nick "john2x")))
+  (defun my-erc-frame ()
+    "Switch or create to a frame called 'ERC' and connect to IRC"
+    (interactive)
+    (let ((frame (frame-purpose-make-mode-frame 'erc-mode)))
+      (with-selected-frame
+          (erc :server "irc.freenode.net" :port "6667" :nick "john2x"))))
 #+END_SRC
 
 When reconnect attempts fail, have a convenient shortcut to reconnect manually.
@@ -1645,12 +1671,12 @@ to attach them.
 Interactive function to switch to a frame dedicated for mu4e.
 
 #+BEGIN_SRC emacs-lisp
-(defun my-mu4e-frame ()
-  "Switch or create to a frame called 'mu4e' and connect to IRC"
-  (interactive)
-  (nameframe-with-frame "mu4e"
-    (persp-switch "mu4e")
-    (mu4e)))
+  (defun my-mu4e-frame ()
+    "Switch or create to a frame called 'mu4e' and connect to IRC"
+    (interactive)
+    (let ((frame (frame-purpose-make-mode-frame 'mu4e)))
+      (with-selected-frame
+          (mu4e))))
 #+END_SRC
 
 Show unread emails in mode-line (via ~mu4e-alert~ package).
@@ -1687,18 +1713,18 @@ Disable line numbers in mu4e buffers.
   ;; in a xact if it is cleared/pending
   (setq ledger-fontify-xact-state-overrides nil)
 
-  (defun my-ledger-frame ()
-    "Easy way to open my ledger journal"
-    (interactive)
-    (nameframe-with-frame "ledger"
-      (persp-switch "ledger")
-      (find-file *ledger-journal-path*)
-      (split-window-right)
-      (find-file-other-window (concat *ledger-docs-dir* "Accounts.ledger"))
-      (split-window-below)
-      (window-number-select 1)
-      (ledger-report "bal" nil)
-      (toggle-frame-maximized)))
+  ;; (defun my-ledger-frame ()
+  ;;   "Easy way to open my ledger journal"
+  ;;   (interactive)
+  ;;   (nameframe-with-frame "ledger"
+  ;;     (persp-switch "ledger")
+  ;;     (find-file *ledger-journal-path*)
+  ;;     (split-window-right)
+  ;;     (find-file-other-window (concat *ledger-docs-dir* "Accounts.ledger"))
+  ;;     (split-window-below)
+  ;;     (window-number-select 1)
+  ;;     (ledger-report "bal" nil)
+  ;;     (toggle-frame-maximized)))
 
   (with-eval-after-load 'flycheck
     (require 'flycheck-ledger))
