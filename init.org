@@ -647,12 +647,12 @@ Cycle through a window's buffer history using ~C-M-,~ (backward) and ~C-M-.~ (fo
 Enable ~company-mode~ globally.
 
 #+BEGIN_SRC emacs-lisp
+  (require 'company)
   (add-hook 'after-init-hook #'global-company-mode)
 #+END_SRC
 
 Add backends.
 #+BEGIN_SRC emacs-lisp
-(require 'company-anaconda)
 (add-to-list 'company-backends 'company-restclient)
 #+END_SRC
 
@@ -690,7 +690,6 @@ LSP extras.
   (setq lsp-ui-sideline-ignore-duplicate t)
   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
 #+END_SRC
-
 
 *** Python
 
