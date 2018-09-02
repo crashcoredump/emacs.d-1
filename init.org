@@ -253,6 +253,7 @@ Install all packages here using ~install-package~.
 
       ;;;; frame-purpose
       frame-purpose
+      frame-workflow
 
       ;;;; Evil (Vim)
       evil
@@ -487,10 +488,9 @@ create the new one."
 
 *** Font
 #+BEGIN_SRC emacs-lisp
-  (defvar Input-font '(:family "Input" :size 10))
-  (defvar PragmataPro-font '(:family "PragmataPro" :size 14))
+  (defvar PragmataPro-font '(:family "PragmataPro" :size 13))
   (defvar Go-font '(:family "Go Mono" :size 12))
-  (defvar Terminus-font '(:family "Terminus (TTF)" :size 14))
+  (defvar Terminus-font '(:family "Terminus" :size 14))
 
   (set-frame-font (apply 'font-spec PragmataPro-font) nil t)
 
@@ -535,6 +535,12 @@ Hide some minor modes from the mode line.
                        " Anaconda" " Anzu"))
 #+END_SRC
 
+*** Other
+Enable pixelwise resizing of frames, so they can be properly aligned
+by our window manager.
+#+BEGIN_SRC emacs-lisp
+(setq frame-resize-pixelwise t)
+#+END_SRC
 
 ** Ag
 
@@ -1233,6 +1239,7 @@ Configure =frame-workflow= and =frame-purpose= to have dedicated
 frames for each Projectile project.
 #+BEGIN_SRC emacs-lisp
   (require 'frame-workflow)
+  (frame-purpose-mode 1)
   (frame-workflow-mode 1)
 
   (setq projectile-switch-project-action #'frame-workflow-switch-directory-frame)
@@ -1289,9 +1296,11 @@ Interactive function to create a frame dedicated to ERC and automatically connec
   (defun my-erc-frame ()
     "Switch or create to a frame called 'ERC' and connect to IRC"
     (interactive)
-    (let ((frame (frame-purpose-make-mode-frame 'erc-mode)))
-      (with-selected-frame
-          (erc :server "irc.freenode.net" :port "6667" :nick "john2x"))))
+    (frame-workflow-define-subject "erc"
+      :make-frame '(frame-purpose-make-mode-frame 'erc-mode)
+      :layout '(progn
+                 (erc :server "irc.freenode.net" :port "6667" :nick "john2x")
+                 (delete-other-windows))))
 #+END_SRC
 
 When reconnect attempts fail, have a convenient shortcut to reconnect manually.
